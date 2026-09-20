@@ -3,7 +3,6 @@ __pycache__/
 *.pyc
 .DS_Store
 *.apk
-*.npz
 data/
 runs/
 checkpoints/
@@ -19,7 +18,6 @@ venv/
 runs/
 checkpoints/
 data/
-*.npz
 *.apk
 
 __pycache__/
@@ -32,5 +30,7 @@ venv/
 runs/
 checkpoints/
 data/
-*.npz
 *.apk
+
+!models/
+!models/**/*.npz
