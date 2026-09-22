@@ -221,11 +221,36 @@ def demo_puzzles(count=200, seed=7):
 
 
 def split(puzzles):
-    train, valid = [], []
+    train, valid, test = split_all(puzzles)
+    return train, valid + test
+
+
+def split_role(puzzle):
+    """Stable topology-level 80/10/10 assignment; no topology crosses splits."""
+    bucket = int(hashlib.sha256(repr(puzzle.group_key()).encode()).hexdigest()[:8], 16) % 10
+    return 'validation' if bucket == 0 else ('test' if bucket == 1 else 'train')
+
+
+def split_all(puzzles):
+    """Return train/validation/test pools without using positions or answers."""
+    train, valid, test = [], [], []
+    destinations = {'train': train, 'validation': valid, 'test': test}
     for p in puzzles:
-        bucket = int(hashlib.sha256(repr(p.group_key()).encode()).hexdigest()[:8], 16) % 10
-        (valid if bucket < 2 else train).append(p)
-    return train, valid
+        destinations[split_role(p)].append(p)
+    return train, valid, test
+
+
+def permute_vehicles(puzzle, rng):
+    """Keep the target at slot 0 and permute all other vehicle/action slots."""
+    if len(puzzle.cars) <= 2:
+        order = list(range(len(puzzle.cars)))
+    else:
+        order = [0] + list(rng.permutation(np.arange(1, len(puzzle.cars))))
+    return Puzzle(puzzle.name, puzzle.difficulty,
+                  tuple(puzzle.cars[i] for i in order),
+                  tuple(puzzle.start[i] for i in order),
+                  source=puzzle.source, minimum_possible=puzzle.minimum_possible,
+                  minimum_source=puzzle.minimum_source)
 
 
 def examples(puzzles):

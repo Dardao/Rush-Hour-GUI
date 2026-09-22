@@ -5,10 +5,11 @@ import numpy as np
 from PySide6.QtCore import Qt, QRectF, QPointF, QTimer, QThread, Signal
 from PySide6.QtGui import QColor, QPainter, QFont, QImage, QPen, QPainterPath
 from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QPushButton, QLabel, QComboBox, QSpinBox, QFileDialog, QMessageBox, QScrollArea, QDialog, QCheckBox)
-from .core import load_apk, split, MAX_MOVES, display_moves
-from .model import Network, rollout
-from .rl import episodes, evaluate, replay_rewards, SUCCESS_REWARD, STEP_REWARD, epsilon_at
+    QPushButton, QLabel, QComboBox, QSpinBox, QFileDialog, QMessageBox, QScrollArea, QDialog, QCheckBox, QSlider)
+from .core import load_apk, split_all, split_role, permute_vehicles, MAX_MOVES, display_moves
+from .model import Network
+from .training import curriculum_pool, canonical_frame, canonical_actions, SuccessReplay
+from .rl import episodes, replay_successes, replay_rewards, SUCCESS_REWARD, STEP_REWARD, epsilon_at
 
 # Stable original vehicle identities; flat body colors matched to the supplied
 # Classic app screenshots (the APK's older sprite sheet uses different shades).
@@ -60,6 +61,7 @@ class Boards(QWidget):
         self.puzzles, self.states, self.paths, self.statuses, self.final = [], [], [], [], []
         self.step = 0
         self.learning = None
+        self.roles = []
         self.last_rewards, self.total_rewards = [], []
         self.fit = True
         self.exit_started = {}
@@ -73,8 +75,8 @@ class Boards(QWidget):
     def set_puzzles(self, puzzles):
         self.exit_started.clear()
         self.exit_timer.stop()
-        train_ids = {id(p) for p in split(puzzles)[0]}
-        self.learning = [id(p) in train_ids for p in puzzles]
+        self.roles = [split_role(p) for p in puzzles]
+        self.learning = [role == 'train' for role in self.roles]
         self.puzzles = puzzles
         self.states = [p.start for p in puzzles]
         self.last_rewards = [None] * len(puzzles)
@@ -182,7 +184,8 @@ class Boards(QWidget):
             minimum = f'Minimum possible: {p.minimum_possible if p.minimum_possible is not None else "—"}'
             q.setPen(QColor('#aebed2' if self.statuses[i] == 'ready' else STATUS[self.statuses[i]]))
             if self.fit:
-                info = (f'{p.name} '+(('[학습]' if self.learning[i] else '[검증]') if self.learning is not None else '')
+                role = {'train': '학습', 'validation': '검증', 'test': '테스트'}.get(self.roles[i], '') if i < len(self.roles) else ''
+                info = (f'{p.name} '+(f'[{role}]' if role else '')
                         + f'\n{used} moves · {self.statuses[i]}\n{minimum}\n{reward_info}')
                 box = QRectF(x+side+12, y+5, pitch-side-16, row_height-10)
                 flags = Qt.AlignmentFlag.AlignLeft | Qt.TextFlag.TextWordWrap
@@ -242,9 +245,9 @@ class AccuracyPlot(QWidget):
         self.setMaximumHeight(190)
         self.setToolTip('정답 없는 강화학습: 학습 중 탐험 episode의 평균 누적 보상.\n검증 보상과는 종료 조건이 달라 직접 비교하지 않습니다.')
         if efficiency:
-            self.setToolTip('현재 페이지 전체 greedy 평가 평균. 성공: Minimum possible / moves, 실패: 0.\n비율이 1을 초과하면 그대로 표시하고 로그에 별도로 기록합니다. 기준값 누락 시 평균은 표시하지 않습니다.')
+            self.setToolTip('전체 학습+검증 greedy 평가 평균 (테스트 제외). 성공: Minimum possible / moves, 실패: 0.\n비율이 1을 초과하면 그대로 표시하고 로그에 별도로 기록합니다. 기준값 누락 시 평균은 표시하지 않습니다.')
         if success:
-            self.setToolTip('Train explore: 학습 중 확률적 탐험 성공률.\nTrain greedy / Val greedy: 학습 종료 후 동일한 고정 모델·종료 조건으로 평가한 성공률.')
+            self.setToolTip('Train explore: 현재 curriculum 학습 집합의 탐험 성공률.\nTrain greedy / Val greedy: 매 epoch 전체 학습/검증 집합의 고정 모델 평가. 페이지 이동과 무관합니다.')
 
     def clear(self):
         self.history.clear()
@@ -264,9 +267,9 @@ class AccuracyPlot(QWidget):
         q.setRenderHint(QPainter.RenderHint.Antialiasing)
         q.setFont(QFont('Arial', 9))
         q.setPen(QColor('#d7e4f4'))
-        title = 'EFFICIENCY · all evaluated' if self.efficiency else ('SOLVE SUCCESS (%)' if self.success else 'RL EPISODE REWARD')
+        title = 'EFFICIENCY · train + val' if self.efficiency else ('SOLVE SUCCESS (%)' if self.success else 'RL EPISODE REWARD')
         q.drawText(QRectF(8, 0, self.width()-16, 22), Qt.AlignmentFlag.AlignLeft, title)
-        legends = [('Train explore', '#67dca4'), ('Train greedy', '#62b5ff'), ('Val greedy', '#f8b65a')] if self.success else [('All greedy' if self.efficiency else 'Train explore', '#67dca4')]
+        legends = [('Train explore', '#67dca4'), ('Train greedy', '#62b5ff'), ('Val greedy', '#f8b65a')] if self.success else [('Train + val' if self.efficiency else 'Train explore', '#67dca4')]
         q.setFont(QFont('Arial', 8))
         labels = []
         for col, (name, color) in enumerate(legends):
@@ -292,12 +295,14 @@ class AccuracyPlot(QWidget):
         low, high = (0, 1) if self.success or self.efficiency else (-4, 1)
         if self.efficiency:
             high = max(1.0, max((row[1] for row in self.history if row[1] is not None), default=1.0))
+        elif not self.success:
+            low = min(low, float(np.floor(min((row[1] for row in self.history if row[1] is not None), default=low))))
         for value in (low, (low+high)/2, high):
             y = area.bottom()-area.height()*(value-low)/(high-low)
             q.setPen(QColor('#334259'))
             q.drawLine(QPointF(area.left(), y), QPointF(area.right(), y))
             q.setPen(QColor('#8fa6c0'))
-            q.drawText(QRectF(0, y-8, 35, 16), Qt.AlignmentFlag.AlignRight, f'{value*100:.0f}' if self.success else f'{value:g}')
+            q.drawText(QRectF(0, y-8, 35, 16), Qt.AlignmentFlag.AlignRight, f'{value*100:.0f}' if self.success else f'{value:.3g}')
         last = self.history[-1][0] if self.history else 1
         xmax = max(2, last)
         q.drawText(QRectF(area.left(), area.bottom()+3, 35, 17), Qt.AlignmentFlag.AlignLeft, '1')
@@ -347,7 +352,7 @@ def efficiency_metrics(puzzles, paths, statuses):
             'efficiency_values': values, 'efficiency_raw_ratios': raw,
             'evaluation_moves': moves, 'efficiency_count': len(puzzles),
             'efficiency_above_one': sum(v is not None and v > 1 for v in raw),
-            'efficiency_rule': 'solved=minimum/actual; failure=0; mean over all visible puzzles'}
+            'efficiency_rule': 'solved=minimum/actual; failure=0; mean over all train and validation puzzles'}
 
 
 class Worker(QThread):
@@ -355,85 +360,124 @@ class Worker(QThread):
     result = Signal(object)
     error = Signal(str)
 
-    def __init__(self, mode, net=None, puzzles=None, epochs=10, source=None, live_delay=0):
+    def __init__(self, mode, net=None, puzzles=None, epochs=10, source=None, live_delay=0, limit=MAX_MOVES):
         super().__init__()
         self.mode, self.net, self.puzzles, self.epochs, self.source = mode, net, puzzles, epochs, source
-        self.live_delay = live_delay
+        self.live_delay, self.limit = live_delay, limit
+        self.epoch, self.phase, self.epsilon = 0, '', 0.0
+
+    def start_phase(self, phase, message):
+        self.phase = phase
+        self.progress.emit({'phase_start': phase, 'epoch': self.epoch, 'message': message})
+
+    def callback(self, originals, augmented=None):
+        last_emit = [0.0]
+        def live(frame):
+            now = time.monotonic()
+            terminal = all(s != 'running' for s in frame['statuses'])
+            if frame['step'] and not terminal and now-last_emit[0] < .08:
+                return
+            last_emit[0] = now
+            if augmented is not None:
+                frame = canonical_frame(originals, augmented, frame)
+            self.progress.emit({'live': frame, 'puzzles': originals, 'phase': self.phase,
+                                'epoch': self.epoch, 'epsilon': self.epsilon if self.phase == 'explore' else 0.0})
+            if self.live_delay: self.msleep(self.live_delay)
+        return live
+
+    def evaluate_groups(self, net, puzzles, rng):
+        paths, statuses = [], []
+        for start in range(0, len(puzzles), 100):
+            group = puzzles[start:start+100]
+            result = episodes(net, group, [False]*len(group), rng,
+                              self.isInterruptionRequested, self.callback(group),
+                              limit=self.limit, greedy=True)
+            if result is None: return None
+            paths.extend(result[0]); statuses.extend(result[1])
+        return paths, statuses
 
     def run(self):
         try:
             if self.mode == 'import':
                 self.result.emit(('import', load_apk(self.source)))
                 return
-            if self.mode == 'infer':
-                paths, states = rollout(self.net, self.puzzles, stopped=self.isInterruptionRequested)
-                self.result.emit(('infer', (paths, states)))
-                return
-            train, valid = split(self.puzzles)
-            if not train:
-                raise ValueError('현재 화면에 학습 문제가 없습니다. 전체 또는 학습 필터로 이동하세요.')
             rng = np.random.default_rng(42)
-            logdir = Path('runs'); logdir.mkdir(exist_ok=True)
-            logpath = logdir / f'rl-{time.time_ns()}.jsonl'
-            monitor = self.puzzles
-            train_ids = {id(p) for p in train}
-            with logpath.open('w') as log:
-                for epoch in range(self.epochs):
-                    epsilon = epsilon_at(epoch + 1, self.epochs)
-                    board_states = [p.start for p in monitor]
-                    board_paths = [[] for p in monitor]
-                    board_statuses = ['ready' for p in monitor]
-                    board_last = [None for p in monitor]
-                    board_totals = [0.0 for p in monitor]
-                    indices = {id(p): i for i, p in enumerate(monitor)}
-                    def callback(group, phase):
-                        def live(frame):
-                            for j, p in enumerate(group):
-                                i = indices[id(p)]
-                                board_states[i] = frame['states'][j]
-                                board_paths[i] = frame['paths'][j]
-                                board_statuses[i] = frame['statuses'][j]
-                                board_last[i] = frame['last_rewards'][j]
-                                board_totals[i] = frame['total_rewards'][j]
-                            self.progress.emit({'live': {'states': list(board_states),
-                                'paths': list(board_paths), 'statuses': list(board_statuses),
-                                'step': frame['step'], 'last_rewards': list(board_last), 'total_rewards': list(board_totals)}, 'puzzles': monitor, 'phase': phase, 'epsilon': epsilon if phase == '학습 탐험' else 0.0,
-                                'learning': [id(p) in train_ids for p in monitor], 'epoch': epoch+1})
-                            if self.live_delay: self.msleep(self.live_delay)
-                        return live
-                    training = episodes(self.net, train, [True]*len(train), rng,
-                                        self.isInterruptionRequested, callback(train, '학습 탐험'), epsilon=epsilon)
-                    if training is None or self.isInterruptionRequested(): break
-                    _, training_statuses, rewards, losses = training
-                    exploration_statuses = training_statuses
-                    evaluation_net = self.net.copy()
-                    evaluation = episodes(evaluation_net, monitor, [False]*len(monitor), rng,
-                                          self.isInterruptionRequested, callback(monitor, '전체 greedy 평가'), greedy=True)
+            if self.mode in ('infer', 'test'):
+                self.start_phase(self.mode, '고정 모델 greedy 평가 · 가중치 업데이트 없음')
+                result = self.evaluate_groups(self.net, self.puzzles, rng)
+                if result is not None:
+                    metric = efficiency_metrics(self.puzzles, *result)
+                    metric.update({'mode': self.mode, 'puzzle_names': [p.name for p in self.puzzles],
+                                   'solved': result[1].count('solved'), 'count': len(self.puzzles)})
+                    if self.mode == 'test':
+                        Path('runs').mkdir(exist_ok=True)
+                        Path(f'runs/test-{time.time_ns()}.json').write_text(json.dumps(metric))
+                    self.result.emit((self.mode, metric))
+                return
+            train, valid, test = split_all(self.puzzles)
+            if not train: raise ValueError('학습 집합이 비어 있습니다.')
+            replay = SuccessReplay(train)
+            evaluated = [p for p in self.puzzles if split_role(p) != 'test']
+            Path('runs').mkdir(exist_ok=True)
+            with Path(f'runs/rl-{time.time_ns()}.jsonl').open('w') as log:
+                log.write(json.dumps({'type': 'split_manifest', 'roles': {p.name: split_role(p) for p in self.puzzles},
+                                      'split_rule': 'topology_sha256_mod10_v1', 'seed': 42})+'\n')
+                for self.epoch in range(1, self.epochs+1):
+                    if self.isInterruptionRequested(): break
+                    self.epsilon = epsilon_at(self.epoch, self.epochs)
+                    eligible, ceiling, fallback = curriculum_pool(train, self.epoch, self.epochs)
+                    order = rng.permutation(len(eligible))
+                    chosen = [eligible[int(i)] for i in order]
+                    stage = f'≤{ceiling}' if ceiling is not None else '전체'
+                    self.start_phase('explore', f'Epoch {self.epoch} · 학습 {len(chosen)}개 · curriculum {stage} · ε={self.epsilon:.3f}')
+                    rewards, losses, exploration = [], [], []
+                    for start in range(0, len(chosen), 100):
+                        originals = chosen[start:start+100]
+                        augmented = [permute_vehicles(p, rng) for p in originals]
+                        result = episodes(self.net, augmented, [True]*len(augmented), rng,
+                                          self.isInterruptionRequested, self.callback(originals, augmented),
+                                          limit=self.limit, epsilon=self.epsilon)
+                        if result is None: break
+                        paths, statuses, totals, fresh_losses = result
+                        exploration.extend(statuses); rewards.extend(totals); losses.extend(fresh_losses)
+                        for p, q, path, status in zip(originals, augmented, paths, statuses):
+                            if status == 'solved': replay.add(p, canonical_actions(p, q, path))
+                    if self.isInterruptionRequested(): break
+                    self.progress.emit({'message': f'Epoch {self.epoch} · 성공 replay 학습 · 보관 {len(replay)}문제'})
+                    replay_losses, replay_count, replay_steps = replay_successes(
+                        self.net, replay.records(), rng, stopped=self.isInterruptionRequested)
+                    if self.isInterruptionRequested(): break
+                    frozen = self.net.copy()
+                    self.start_phase('evaluate', f'Epoch {self.epoch} · 전체 학습 {len(train)} + 검증 {len(valid)} greedy 평가 · 테스트 별도')
+                    evaluation = self.evaluate_groups(frozen, evaluated, rng)
                     if evaluation is None or self.isInterruptionRequested(): break
-                    _, evaluation_statuses, _, _ = evaluation
-                    training_statuses = [status for p, status in zip(monitor, evaluation_statuses) if id(p) in train_ids]
-                    validation_statuses = [status for p, status in zip(monitor, evaluation_statuses) if id(p) not in train_ids]
-                    efficiency = efficiency_metrics(monitor, evaluation[0], evaluation_statuses)
-                    display_solved = board_statuses.count('solved')
-                    metric = {'epoch': epoch+1, 'algorithm': 'epsilon-greedy V-trace actor-critic', 'epsilon': epsilon, 'epsilon_start': 1.0, 'epsilon_end': 0.05, 'epsilon_decay_fraction': 0.8, 'vtrace_rho_clip': 1.0, 'vtrace_c_clip': 1.0,
-                              'loss': float(np.mean(losses)) if losses else 0.0,
-                              'episode_reward': float(np.mean(rewards)),
-                              'train_solved': training_statuses.count('solved'),
-                              'train_evaluated': len(training_statuses),
-                              'train_success_rate': training_statuses.count('solved')/len(training_statuses),
-                              'validation_success_rate': (validation_statuses.count('solved')/len(validation_statuses) if validation_statuses else None),
-                              'solved': validation_statuses.count('solved'), 'evaluated': len(validation_statuses),
-                              'display_solved': display_solved, 'display_count': len(monitor),
-                              'episodes': len(rewards), 'scope': 'visible_page',
-                              'train_metric': 'frozen_greedy_success',
-                              'exploration_solved': exploration_statuses.count('solved'),
-                              'exploration_evaluated': len(exploration_statuses),
-                              'evaluation_scope': 'all_visible_puzzles',
-                              'validation_metric': 'frozen_greedy_success',
-                              'puzzle_names': [p.name for p in monitor], 'seed': 42,
-                              'gamma': 0.99, 'reward_version': 'distance_exit_v1', 'square_reward': -0.01, 'exit_cost_included': True, 'repeat_penalty': -0.03,
-                              'success_reward': 1.0, 'limit': MAX_MOVES, 'success_condition': 'clear_exit_path', 'n_step': 16}
-                    metric.update(efficiency)
+                    paths, statuses = evaluation
+                    train_status = [s for p, s in zip(evaluated, statuses) if split_role(p) == 'train']
+                    val_status = [s for p, s in zip(evaluated, statuses) if split_role(p) == 'validation']
+                    metric = {'epoch': self.epoch, 'algorithm': 'epsilon-greedy V-trace + positive-advantage self-imitation',
+                              'epsilon': self.epsilon, 'seed': 42, 'gamma': .99,
+                              'loss': float(np.mean(losses)) if losses else 0.,
+                              'replay_loss': float(np.mean(replay_losses)) if replay_losses else 0.,
+                              'episode_reward': float(np.mean(rewards)) if rewards else 0.,
+                              'train_solved': train_status.count('solved'), 'train_evaluated': len(train_status),
+                              'train_success_rate': train_status.count('solved')/len(train_status),
+                              'solved': val_status.count('solved'), 'evaluated': len(val_status),
+                              'validation_success_rate': val_status.count('solved')/len(val_status) if val_status else None,
+                              'display_solved': statuses.count('solved'), 'display_count': len(statuses),
+                              'episodes': len(exploration), 'exploration_evaluated': len(exploration),
+                              'exploration_solved': exploration.count('solved'),
+                              'split_counts': {'train': len(train), 'validation': len(valid), 'test': len(test)},
+                              'scope': 'all_curriculum_eligible_train_once', 'batch_size': 100,
+                              'evaluation_scope': 'all_train_and_validation', 'test_evaluated': 0,
+                              'puzzle_names': [p.name for p in evaluated], 'training_names': [p.name for p in chosen],
+                              'curriculum_maximum': ceiling, 'curriculum_eligible': len(eligible), 'curriculum_fallback': fallback,
+                              'permutation_augmentation': True, 'replay_buffer_size': len(replay),
+                              'replay_episodes': replay_count, 'replay_transitions': replay_steps,
+                              'replay_capacity': 500, 'replay_max_per_epoch': 30,
+                              'reward_version': 'distance_exit_v1', 'square_reward': -.01,
+                              'repeat_penalty': -.03, 'success_reward': 1., 'exit_cost_included': True,
+                              'limit': self.limit, 'n_step': 16}
+                    metric.update(efficiency_metrics(evaluated, paths, statuses))
                     log.write(json.dumps(metric)+'\n'); log.flush()
                     self.progress.emit({'metrics': metric, 'net': self.net.copy()})
             self.result.emit(('train', self.net.copy()))
@@ -444,10 +488,12 @@ class Worker(QThread):
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('Rush Hour · Neural Array Lab v0.2.10 · RL')
+        self.setWindowTitle('Rush Hour · Neural Array Lab v0.2.11 · RL')
         self.resize(1600, 1000)
         self.net = Network()
         self.puzzles = []
+        self.monitor_cache = {}
+        self.monitor_phase = ""
         self.settings_path = Path(__file__).resolve().parents[1] / 'data' / 'preferences.json'
         self.worker = None
         self.page = 0
@@ -472,7 +518,8 @@ class Window(QMainWindow):
             return b
         button('APK 가져오기', self.import_apk)
         button('강화학습', self.train)
-        button('신경망 추론', self.infer)
+        button('현재 100개 추론', self.infer)
+        button('테스트 평가', self.test)
         button('정지', self.stop, False)
         button('저장', self.save)
         button('불러오기', self.load)
@@ -480,13 +527,16 @@ class Window(QMainWindow):
         bar.addWidget(QLabel('Epochs'))
         self.epochs = QSpinBox(); self.epochs.setRange(1, 1000); self.epochs.setValue(10); bar.addWidget(self.epochs)
         nav = QHBoxLayout(); layout.addLayout(nav)
-        self.filter = QComboBox(); self.filter.addItems(['전체', '학습 그룹', '검증 그룹'])
+        self.filter = QComboBox(); self.filter.addItems(['전체', '학습 그룹', '검증 그룹', '테스트 그룹'])
         self.filter.currentIndexChanged.connect(self.change_filter); nav.addWidget(self.filter)
         self.prev = QPushButton('‹ 이전 100'); self.prev.clicked.connect(lambda: self.change_page(-1)); nav.addWidget(self.prev)
+        self.page_slider = QSlider(Qt.Orientation.Horizontal); self.page_slider.setRange(0, 0)
+        self.page_slider.setToolTip('100개 단위 모니터 페이지. 학습 대상과 그래프 집계는 바뀌지 않습니다.')
+        self.page_slider.setMinimumWidth(180); self.page_slider.valueChanged.connect(self.slider_page); nav.addWidget(self.page_slider, 1)
         self.next = QPushButton('다음 100 ›'); self.next.clicked.connect(lambda: self.change_page(1)); nav.addWidget(self.next)
         self.page_label = QLabel(); nav.addWidget(self.page_label)
-        nav.addStretch(); nav.addWidget(QLabel('재생 간격 ms'))
-        speed = QSpinBox(); speed.setRange(30, 2000); speed.setValue(220); speed.valueChanged.connect(self.timer.setInterval); nav.addWidget(speed)
+        nav.addWidget(QLabel('추론 간격 ms'))
+        self.speed = QSpinBox(); self.speed.setRange(0, 2000); self.speed.setValue(100); nav.addWidget(self.speed)
         self.info = QLabel('APK 가져오기를 선택하세요. 기본 화면은 Easy001~Easy100입니다.')
         self.info.setWordWrap(True); layout.addWidget(self.info)
         self.metrics_label = QLabel('224 → 128 → 64 → [Policy 140 | Value 1]   ·   ε-greedy 1.00 → 0.05 · V-trace Actor–Critic · rewards only · no reference solutions')
@@ -511,7 +561,7 @@ class Window(QMainWindow):
 
     def selected(self):
         if self.filter.currentIndex() == 0: return self.puzzles
-        return split(self.puzzles)[self.filter.currentIndex()-1]
+        return split_all(self.puzzles)[self.filter.currentIndex()-1]
 
     def change_filter(self):
         self.page = 0; self.show_page()
@@ -519,14 +569,24 @@ class Window(QMainWindow):
     def change_page(self, amount):
         self.page = max(0, min((len(self.selected())-1)//100, self.page+amount)); self.show_page()
 
+    def slider_page(self, page):
+        if page != self.page:
+            self.page = page
+            self.show_page()
+
     def show_page(self):
         self.timer.stop()
         group = self.selected()
+        pages = max(1, (len(group)+99)//100)
+        self.page = min(self.page, pages-1)
+        self.page_slider.blockSignals(True); self.page_slider.setRange(0, pages-1); self.page_slider.setValue(self.page); self.page_slider.blockSignals(False)
         self.boards.set_puzzles(group[self.page*100:(self.page+1)*100])
-        self.page_label.setText(f'{self.page+1} / {max(1, (len(group)+99)//100)}   ·   {len(group)} puzzles')
+        self.page_label.setText(f'{self.page+1}/{pages} · {self.page*100+1 if group else 0}–{min((self.page+1)*100,len(group))} / {len(group)}')
+        self.prev.setEnabled(self.page > 0); self.next.setEnabled(self.page < pages-1)
+        self.render_monitor()
 
     def busy(self, active):
-        for widget in self.locked + [self.filter, self.prev, self.next, self.epochs]:
+        for widget in self.locked + [self.epochs]:
             widget.setEnabled(not active)
 
     def launch(self, worker):
@@ -552,19 +612,38 @@ class Window(QMainWindow):
         if not self.puzzles:
             QMessageBox.information(self, 'APK 필요', '먼저 APK 가져오기로 문제를 불러오세요.')
             return
-        visible = list(self.boards.puzzles)
-        training, validation = split(visible)
+        training, validation, test = split_all(self.puzzles)
         if not training:
-            QMessageBox.information(self, '학습 문제 없음', '현재 화면은 검증 문제만 있습니다. 전체 또는 학습 필터로 이동하세요.')
+            QMessageBox.information(self, '학습 문제 없음', '전체 데이터의 학습 집합이 비어 있습니다.')
             return
-        self.info.setText(f'현재 화면 {len(visible)}개만 강화학습 · 학습 {len(training)} / 검증 {len(validation)} · 검증은 업데이트 제외')
+        self.info.setText(f'전체 {len(self.puzzles):,}개 · 학습 {len(training)} / 검증 {len(validation)} / 테스트 {len(test)} · 100개씩 처리 · 슬라이더는 모니터 위치만 변경')
         self.accuracy_plot.clear(); self.success_plot.clear(); self.efficiency_plot.clear()
-        self.launch(Worker('train', self.net.copy(), visible, self.epochs.value(), live_delay=30))
+        self.launch(Worker('train', self.net.copy(), list(self.puzzles), self.epochs.value()))
 
     def infer(self):
         if self.boards.puzzles:
             self.info.setText(f'Greedy inference · legal mask · 반복 또는 {MAX_MOVES}회 행동에서 종료')
-            self.launch(Worker('infer', self.net.copy(), list(self.boards.puzzles)))
+            self.launch(Worker('infer', self.net.copy(), list(self.boards.puzzles), live_delay=self.speed.value()))
+
+    def test(self):
+        group = split_all(self.puzzles)[2]
+        if not group: return
+        self.filter.setCurrentIndex(3)
+        self.launch(Worker('test', self.net.copy(), group, live_delay=self.speed.value()))
+
+    def render_monitor(self):
+        for i, p in enumerate(self.boards.puzzles):
+            row = self.monitor_cache.get(p.name)
+            if row is None: continue
+            self.boards.states[i] = row['state']
+            self.boards.paths[i] = row['path']
+            self.boards.statuses[i] = row['status']
+            self.boards.last_rewards[i] = row['last']
+            self.boards.total_rewards[i] = row['total']
+            if row['status'] == 'solved': self.boards.exit_started[i] = row['solved_at']
+        self.boards.final = list(self.boards.statuses)
+        self.boards.step = max((len(p) for p in self.boards.paths), default=0)
+        self.boards.sync_exits(); self.boards.update()
 
     def stop(self):
         self.timer.stop()
@@ -576,21 +655,25 @@ class Window(QMainWindow):
         if not self.boards.advance(): self.timer.stop()
 
     def progress(self, payload):
+        if 'phase_start' in payload:
+            self.monitor_phase = payload['phase_start']
+            self.monitor_cache.clear()
+            self.show_page()
+            self.info.setText(payload['message'] + ' · 다른 페이지도 슬라이더로 확인 가능 · ready=이번 단계 대기/대상 아님')
+            return
         if 'live' in payload:
             self.timer.stop()
             frame = payload['live']
-            self.boards.puzzles = payload['puzzles']
-            self.boards.states = frame['states']
-            self.boards.paths = frame['paths']
-            self.boards.statuses = frame['statuses']
-            self.boards.final = list(frame['statuses'])
-            self.boards.step = max((len(path) for path in frame['paths']), default=0)
-            self.boards.last_rewards = frame['last_rewards']
-            self.boards.total_rewards = frame['total_rewards']
-            self.boards.learning = payload['learning']
-            self.boards.sync_exits()
-            self.boards.update()
-            self.page_label.setText(f"RL epoch {payload['epoch']} · {payload['phase']} · ε={payload['epsilon']:.3f} · {frame['step']}/{MAX_MOVES}회 행동 · 학습 / 검증")
+            for j, p in enumerate(payload['puzzles']):
+                old = self.monitor_cache.get(p.name, {})
+                solved_at = old.get('solved_at') if old.get('status') == 'solved' else time.monotonic()
+                self.monitor_cache[p.name] = {'state': frame['states'][j], 'path': frame['paths'][j],
+                    'status': frame['statuses'][j], 'last': frame['last_rewards'][j],
+                    'total': frame['total_rewards'][j], 'solved_at': solved_at}
+            self.render_monitor()
+            first, count = payload['puzzles'][0].name, len(payload['puzzles'])
+            phase = {'explore': '학습 탐험', 'evaluate': '학습+검증 평가', 'infer': '페이지 추론', 'test': '테스트 평가'}[payload['phase']]
+            self.metrics_label.setText(f"Epoch {payload['epoch']} · {phase} · ε={payload['epsilon']:.3f} · 현재 처리 {first} 등 {count}개 · {frame['step']}/{MAX_MOVES} actions")
             return
         if 'message' in payload:
             self.metrics_label.setText(payload['message']); return
@@ -598,16 +681,19 @@ class Window(QMainWindow):
         m = payload['metrics']
         self.accuracy_plot.append(m); self.success_plot.append(m); self.efficiency_plot.append(m)
         validation_rate = f"{m['validation_success_rate']:.1%}" if m['evaluated'] else '해당 없음'
+        curriculum = f"≤{m['curriculum_maximum']}" if m['curriculum_maximum'] is not None else '전체'
         self.metrics_label.setText(f"Epoch {m['epoch']} · ε={m['epsilon']:.3f} | 학습 greedy 해결 {m['train_solved']}/{m['train_evaluated']} ({m['train_success_rate']:.1%})"
                             f" | 검증 greedy 해결 {m['solved']}/{m['evaluated']} ({validation_rate})"
                             f" | 탐험 평균 보상 {m['episode_reward']:.3f} | RL loss {m['loss']:.4f}"
-                            f" | 화면 성공 {m['display_solved']}/{m['display_count']} | 학습 episodes {m['episodes']}")
+                            f" | 전체 평가 성공 {m['display_solved']}/{m['display_count']} | curriculum {curriculum}"
+                            f" | replay {m['replay_episodes']}회/{m['replay_buffer_size']}개 | 학습 episodes {m['episodes']}")
 
     def result(self, payload):
         mode, result = payload
         if mode == 'import':
             self.accuracy_plot.clear(); self.success_plot.clear(); self.efficiency_plot.clear()
             self.puzzles, digest = result
+            self.monitor_cache.clear()
             Path('data').mkdir(exist_ok=True)
             Path('data/provenance.json').write_text(json.dumps({'sha256': digest, 'count': len(self.puzzles)}, indent=2))
             try:
@@ -620,13 +706,14 @@ class Window(QMainWindow):
             self.filter.blockSignals(False)
             self.page = 0; self.show_page()
             self.info.setText(f'APK {len(self.puzzles):,}개 로드 / SHA256 {digest[:16]}… / 원본 업로드·복사 없음')
-        elif mode == 'infer':
-            paths, statuses = result
-            self.boards.set_paths(paths, statuses); self.timer.start()
-            self.metrics_label.setText(f'Greedy solved {statuses.count("solved")}/{len(statuses)} · loop {statuses.count("loop")} · max {MAX_MOVES} actions')
+        elif mode in ('infer', 'test'):
+            name = '테스트' if mode == 'test' else '현재 페이지'
+            efficiency = f"{result['efficiency_mean']:.3f}" if result['efficiency_mean'] is not None else '—'
+            self.metrics_label.setText(f"{name} greedy 해결 {result['solved']}/{result['count']} · Efficiency {efficiency}")
+            self.info.setText(f'{name} 평가 완료 · 고정 모델 · 가중치 업데이트 없음')
         else:
             self.net = result; self.heat.set_network(self.net)
-            self.info.setText('강화학습 종료 · 화면·성공률=학습/검증 모두 고정 모델 greedy 평가 · 보상 그래프=학습 탐험 · 저장으로 RL 가중치 보관')
+            self.info.setText('강화학습 종료 · 전체 분할 학습/검증 · 테스트 학습 미사용 · 차량 순서 증강 · 성공 replay · curriculum 적용')
 
     def save(self):
         path, _ = QFileDialog.getSaveFileName(self, '가중치 저장', 'checkpoints/model.npz', 'NumPy weights (*.npz)')
@@ -638,14 +725,14 @@ class Window(QMainWindow):
         path, _ = QFileDialog.getOpenFileName(self, '가중치 불러오기', '', 'NumPy weights (*.npz)')
         if path:
             try:
-                self.net = Network.load(path); self.heat.set_network(self.net); self.show_page()
+                self.net = Network.load(path); self.heat.set_network(self.net); self.monitor_cache.clear(); self.show_page()
                 self.accuracy_plot.clear(); self.success_plot.clear(); self.efficiency_plot.clear()
                 self.info.setText('RL 가중치와 optimizer 로드 완료 · 다음 실행의 그래프/탐험 난수는 새로 시작합니다.')
             except Exception as exc: QMessageBox.critical(self, 'Load', str(exc))
 
     def reset(self):
         if QMessageBox.question(self, '초기화', '현재 가중치를 초기화할까요? 저장 파일은 유지됩니다.') == QMessageBox.StandardButton.Yes:
-            self.net = Network(); self.heat.set_network(self.net); self.show_page()
+            self.net = Network(); self.heat.set_network(self.net); self.monitor_cache.clear(); self.show_page()
             self.accuracy_plot.clear(); self.success_plot.clear(); self.efficiency_plot.clear()
 
     def detail(self, i):
@@ -658,7 +745,8 @@ class Window(QMainWindow):
         layout.addWidget(QLabel((f'Reward: {last:+.2f}' if last is not None else 'Reward: —') + f'\nTotal reward: {total:+.2f}'))
         out = self.net.forward(p.encode(state)[None])[0]
         legal = p.actions(state)
-        scores = out[legal]; prob = np.exp(scores - scores.max()); prob /= prob.sum()
+        scores = out[legal]; prob = np.exp(scores - scores.max()) if legal else np.array([])
+        if legal: prob /= prob.sum()
         top = sorted(zip(legal, prob), key=lambda x: -x[1])[:5]
         lines = [f'Value: {out[140]:.3f} expected discounted reward', 'Top legal actions:']
         for a, pr in top:
@@ -681,6 +769,9 @@ def configure_style(app):
     app.setStyleSheet('''QWidget {background:#111b2b; color:#dce7f5; font-size:12px;}
         QPushButton,QComboBox,QSpinBox {background:#24364b; border:1px solid #3d566d; border-radius:5px; padding:6px;}
         QPushButton:hover {background:#355575;} QPushButton:disabled {color:#62738a;}
+        QSlider::groove:horizontal {height:5px; background:#334259; border-radius:2px;}
+        QSlider::handle:horizontal {width:15px; margin:-5px 0; background:#76d9cb; border-radius:5px;}
+        QSlider::sub-page:horizontal {background:#438b85; border-radius:2px;}
         QScrollArea {border:none;}''')
 
 

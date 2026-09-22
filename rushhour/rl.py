@@ -1,7 +1,7 @@
 """Epsilon-greedy behavior with clipped V-trace actor-critic updates."""
 import numpy as np
 from .model import policy, rollout
-from .core import MAX_MOVES
+from .core import MAX_MOVES, permute_vehicles
 
 GAMMA = 0.99
 LIMIT = MAX_MOVES
@@ -64,6 +64,57 @@ def replay_rewards(puzzle, path):
         if puzzle.is_solved(nxt): break
         state = nxt; seen.add(state)
     return last, total
+
+
+def replay_successes(net, records, rng, max_records=30, batch_size=256, stopped=lambda: False):
+    """Auxiliary self-imitation: positive observed-return advantage only.
+
+    This is deliberately separate from the fresh V-trace objective. Successful
+    replay is selection-biased, so it is not treated as an on-policy update.
+    """
+    if not records:
+        return [], 0, 0
+    selected = rng.choice(len(records), size=min(max_records, len(records)), replace=False)
+    rows, used = [], 0
+    for index in selected:
+        if stopped(): break
+        original, original_path = records[int(index)]
+        if any(not 0 <= int(a) < len(original.cars)*10 for a in original_path): continue
+        puzzle = permute_vehicles(original, rng)
+        slots = {c.label: i for i, c in enumerate(puzzle.cars)}
+        path = [slots[original.cars[int(a)//10].label]*10+int(a)%10 for a in original_path]
+        state, seen, episode, solved = puzzle.start, {puzzle.start}, [], False
+        for action in path:
+            if action not in puzzle.actions(state):
+                break
+            mask = np.zeros(140, bool); mask[puzzle.actions(state)] = True
+            nxt = puzzle.move(state, action)
+            r = transition_reward(puzzle, nxt, action, seen)
+            episode.append((puzzle.encode(state), mask, action, r))
+            solved = puzzle.is_solved(nxt)
+            if solved: break
+            state = nxt; seen.add(state)
+        if not solved or not episode: continue
+        used += 1
+        discounted, with_returns = 0.0, []
+        for x, mask, action, r in reversed(episode):
+            discounted = r + GAMMA * discounted
+            with_returns.append((x, mask, action, discounted))
+        rows.extend(reversed(with_returns))
+    rng.shuffle(rows)
+    losses = []
+    for start in range(0, len(rows), batch_size):
+        if stopped(): break
+        batch = rows[start:start+batch_size]
+        x = np.stack([r[0] for r in batch])
+        returns = np.asarray([r[3] for r in batch], np.float32)
+        values = net.forward(x)[:, 140]
+        positive = np.maximum(returns-values, 0)
+        if not positive.any(): continue
+        losses.append(net.actor_critic(x, np.asarray([r[2] for r in batch]),
+                                       np.maximum(returns, values), np.stack([r[1] for r in batch]),
+                                       lr=0.0001, entropy_weight=0, policy_advantages=positive))
+    return losses, used, len(rows)
 
 
 def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limit=LIMIT, greedy=False, epsilon=1.0):

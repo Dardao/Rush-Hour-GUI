@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from rushhour.core import Puzzle, Vehicle
 from rushhour.model import Network, policy, rollout
-from rushhour.rl import episodes, reward, replay_rewards, epsilon_action, epsilon_at, vtrace_targets
+from rushhour.rl import episodes, reward, replay_rewards, replay_successes, epsilon_action, epsilon_at, vtrace_targets
 
 
 class NoAnswer:
@@ -126,6 +126,14 @@ class RLTests(unittest.TestCase):
         targets, advantages = vtrace_targets([transition(1,True,pi=.1,mu=.5)], np.zeros(1))
         np.testing.assert_allclose(targets,[.2])
         np.testing.assert_allclose(advantages,[.2])
+
+    def test_success_replay_updates_from_observed_path(self):
+        p = Puzzle('replay', 0, (Vehicle('x', True, 2, 2), Vehicle('a', False, 2, 3)), (0, 1))
+        net = Network(); before = net.t
+        losses, episodes_used, transitions = replay_successes(net, [(p, (16,))], np.random.default_rng(2))
+        self.assertEqual((episodes_used, transitions), (1, 1))
+        self.assertEqual(len(losses), 1)
+        self.assertGreater(net.t, before)
 
     def test_cancel(self):
         net = Network()

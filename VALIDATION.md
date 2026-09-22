@@ -1,3 +1,13 @@
+# v0.2.11 validation
+
+- 23 unit tests passed. New coverage: topology-disjoint three-way split, vehicle slot/action remapping, cumulative curriculum, train-only replay admission, path validity, deduplication/capacity, discounted-return hand calculation and positive-only replay advantage.
+- Real QThread GUI smoke passed on 220 synthetic fixtures over two epochs. Switched page during live training and verified it stayed selected through later worker frames. Canonical states match replayed canonical actions. Final cached results survive navigation; held-out test boards remain ready.
+- Frozen evaluation checks compare weights, biases, both Adam moment arrays and step counter before/after; every selected action is a legal argmax. Explicit test evaluation produces separate results.
+- Full audited APK run, real 300-action limit and one full-difficulty epoch: 2500 boards imported; 2034 unique train episodes; 2034 train + 214 validation evaluated; 252 test excluded; Efficiency denominator 2248. 222 successful training puzzles stored, 30 replay trajectories used (5583 transitions). Run took 38.65 s in this Linux environment; not a Mac performance guarantee.
+- Verified all 25 monitor pages are reachable, including IDs 2401–2500; checked final page cache. Existing Minimum possible and exit-distance reward tests remain passing.
+- Rendered 1600×1000 synthetic GUI and 2048×1152 actual APK GUI; inspected single-row legends, equal plot heights, full board grid and page-25 monitor. Linux image lacks Korean fallback fonts; macOS typography is not validated here.
+- No long-run generalization improvement claim. MLP and old checkpoint weight shapes unchanged; replay/schedules/monitor state reset for a new run and are not serialized.
+
 # v0.2.10 validation
 
 - Offscreen rendered synthetic 300-epoch histories at window widths 1600 and 2048; inspected the 1600 render for a single-row, unclipped legend.
