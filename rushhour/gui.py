@@ -909,7 +909,9 @@ class Window(QMainWindow):
         m = payload['metrics']
         self.accuracy_plot.append(m); self.success_plot.append(m); self.efficiency_plot.append(m)
         if m.get('supervised'):
-            self.metrics_label.setText(f"Epoch {m['epoch']} · 교사 행동 학습 loss {m['loss']:.4f} · 행동 정확도 {m['action_accuracy']:.1%} · 학습 greedy {m['train_solved']}/{m['train_evaluated']} · 검증 greedy {m['solved']}/{m['evaluated']} · Efficiency {m['efficiency_mean']:.3f}")
+            validation_efficiency = (f"{m['validation_efficiency_mean']:.3f}"
+                                     if m['validation_efficiency_mean'] is not None else '해당 없음')
+            self.metrics_label.setText(f"Epoch {m['epoch']} · 교사 행동 학습 loss {m['loss']:.4f} · 행동 정확도 {m['action_accuracy']:.1%} · 학습 greedy {m['train_solved']}/{m['train_evaluated']} · 검증 greedy {m['solved']}/{m['evaluated']} · Efficiency 학습 {m['train_efficiency_mean']:.3f} / 검증 {validation_efficiency} (전체 {m['efficiency_mean']:.3f})")
             return
         validation_rate = f"{m['validation_success_rate']:.1%}" if m['evaluated'] else '해당 없음'
         curriculum = f"≤{m['curriculum_maximum']}" if m['curriculum_maximum'] is not None else '전체'

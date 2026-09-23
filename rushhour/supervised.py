@@ -110,12 +110,15 @@ def run_supervised(worker):
             solved = statuses[:len(train)].count('solved')
             vals = statuses[len(train):]
             moves = [display_moves(p, path, s == 'solved') for p, path, s in zip(evaluated, paths, statuses)]
+            efficiencies = [p.minimum_possible/n if s == 'solved' else 0
+                            for p, n, s in zip(evaluated, moves, statuses)]
             m = dict(supervised=True, epoch=w.epoch, loss=losses/seen, action_accuracy=correct/seen,
                      train_solved=solved, train_evaluated=len(train), train_success_rate=solved/len(train),
                      solved=vals.count('solved'), evaluated=len(valid),
                      validation_success_rate=vals.count('solved')/len(valid) if valid else None,
-                     efficiency_mean=float(np.mean([p.minimum_possible/n if s == 'solved' else 0
-                         for p,n,s in zip(evaluated,moves,statuses)])),
+                     train_efficiency_mean=float(np.mean(efficiencies[:len(train)])),
+                     validation_efficiency_mean=float(np.mean(efficiencies[len(train):])) if valid else None,
+                     efficiency_mean=float(np.mean(efficiencies)),
                      examples=seen, lr=lr, update_count=w.net.t,
                      puzzle_names=[p.name for p in evaluated], statuses=statuses, moves=moves)
             if solved > best:
