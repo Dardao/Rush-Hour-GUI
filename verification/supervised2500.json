@@ -1,0 +1,10 @@
+{
+  "solved": 2500,
+  "total": 2500,
+  "checkpoint_reload": true,
+  "minimum_matched": 2500,
+  "efficiency": 1.0,
+  "epochs": 70,
+  "parameters": 449676,
+  "v030_weights_identical": false
+}

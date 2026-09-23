@@ -1,0 +1,26 @@
+{
+  "reason": "All 2500 neural greedy paths match retained self-experience costs; wait for independent additional exploration.",
+  "planned_epochs": 80,
+  "last_evaluated_epoch": 40,
+  "best_evaluation": {
+    "solved": 2500,
+    "total": 2500,
+    "by_mode": {
+      "Easy": 625,
+      "Medium": 625,
+      "Hard": 625,
+      "Expert": 625
+    },
+    "loops": 0,
+    "limits": 0,
+    "mean_solved_moves": 37.6064,
+    "total_success_moves": 94016,
+    "epoch": 30,
+    "seconds": 197.28107598000497,
+    "replay_states": 64112,
+    "focus_states": 78,
+    "loss": 0.018707695552183472,
+    "mean_actor_weight": 0.9999999931750406
+  },
+  "interrupted_between_evaluations": true
+}

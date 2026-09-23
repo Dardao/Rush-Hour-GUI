@@ -1,0 +1,26 @@
+{
+  "tab_order": [
+    "지도학습",
+    "강화학습"
+  ],
+  "independent_weights": true,
+  "independent_histories": true,
+  "teacher_file_blocked_during_rl": true,
+  "live_tab_switch": true,
+  "phases": {
+    "supervised": [
+      "evaluate",
+      "learn",
+      "prepare",
+      "screenshot",
+      "teacher_batch"
+    ],
+    "rl": [
+      "evaluate",
+      "explore",
+      "learn",
+      "weight_update"
+    ]
+  },
+  "epochs_per_mode": 3
+}

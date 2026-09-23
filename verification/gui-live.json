@@ -1,0 +1,20 @@
+{
+  "fresh_random_start": true,
+  "live_phases": [
+    "evaluate",
+    "explore",
+    "learn"
+  ],
+  "action_sources": [
+    "greedy",
+    "random",
+    "ready"
+  ],
+  "page_navigation": true,
+  "scopes_verified": [
+    4,
+    2500
+  ],
+  "full_scope_smoke_action_limit": 1,
+  "full_scope_not_a_convergence_test": true
+}

@@ -1,0 +1,19 @@
+{
+  "baseline_sha256": "d4074555f98f22ab05dc81b897667440b931808bae6a114b261100518182f4e7",
+  "boards_sha256": "e7a6adc5b1cd964d5ba58661f5836dbabcfad293c9870b9f5ed93b7178290bec",
+  "minimum_reference_sha256": "608ae00652b090b40cfe4a3e01a1602d686aff7189e9e73aad7e29c6e2e89510",
+  "geometry_match_count": 2500,
+  "reference_unit": "squares including final exit",
+  "minimum_used_for_training": false,
+  "external_action_paths": false,
+  "baseline_source": "../Rush-Hour-RL-Research-v0.3.3/models/rl-research-best.npz",
+  "baseline_experience_source": "../Rush-Hour-RL-Research-v0.3.3/experiments/refine-resume-focus-seed42/experience.json",
+  "training_method": "Archive simulator resets, sampled transitions, own successful experience replay, AWR actor-critic",
+  "evaluation_method": "Original starts; neural legal argmax only; repeat-state stop; 300-action cap",
+  "comparison_limitations": [
+    "All 2500 boards are training boards; not an unseen-board generalization test",
+    "Recorded app minima are references, not a new exhaustive optimality proof",
+    "One training seed per condition; no statistical superiority claim"
+  ],
+  "minimum_values_match_gui_count": 2500
+}

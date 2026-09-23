@@ -1,0 +1,5 @@
+{
+  "command": "python -m unittest discover -s tests -v",
+  "tests_run": 30,
+  "passed": true
+}

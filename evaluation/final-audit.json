@@ -1,0 +1,24 @@
+{
+  "total": 2500,
+  "solved": 2500,
+  "minimum_matches": 2500,
+  "below_reference": 0,
+  "max_actions": 69,
+  "max_moves": 93,
+  "mean_discounted_return": 0.38894860835001094,
+  "model_sha256": "82cb6c6099fbadf5a88699b4ba81bf02762e6406ef3c39632019699da4c12c60",
+  "checkpoint_archives_validated": [
+    "models/baseline-v033.npz",
+    "models/square-100k-best.npz",
+    "models/stage100k-resume.npz",
+    "models/stage1m-resume.npz",
+    "models/rl-minimum-best.npz",
+    "experiments/square-only-20/final.npz",
+    "experiments/action-100k-60/final.npz",
+    "experiments/square-100k-60/final.npz"
+  ],
+  "models_same_hash_alias": [
+    "models/square-100k-best.npz",
+    "models/stage100k-resume.npz"
+  ]
+}

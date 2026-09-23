@@ -1,0 +1,26 @@
+{
+  "reason": "All 2500 solved with new shorter self-experience; continue with deeper exploration rather than repeat saturated replay.",
+  "planned_epochs": 160,
+  "last_evaluated_epoch": 55,
+  "best_evaluation": {
+    "solved": 2500,
+    "total": 2500,
+    "by_mode": {
+      "Easy": 625,
+      "Medium": 625,
+      "Hard": 625,
+      "Expert": 625
+    },
+    "loops": 0,
+    "limits": 0,
+    "mean_solved_moves": 38.5176,
+    "total_success_moves": 96294,
+    "epoch": 45,
+    "seconds": 324.30414053399727,
+    "replay_states": 65436,
+    "focus_states": 69,
+    "loss": 0.010117349130822751,
+    "mean_actor_weight": 0.9999999883479642
+  },
+  "interrupted_between_evaluations": true
+}

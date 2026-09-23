@@ -15,12 +15,13 @@ def epsilon_at(epoch, epochs):
     return float(1.0 + (0.05 - 1.0) * min(1.0, max(0, epoch - 1) / (decay_epochs - 1)))
 
 
-def epsilon_action(scores, mask, rng, epsilon):
+def epsilon_action(scores, mask, rng, epsilon, return_source=False):
     legal = np.flatnonzero(mask)
     best = int(legal[np.argmax(scores[legal])])
-    action = int(rng.choice(legal)) if epsilon > 0 and rng.random() < epsilon else best
+    random_choice = epsilon > 0 and rng.random() < epsilon
+    action = int(rng.choice(legal)) if random_choice else best
     mu = epsilon / len(legal) + ((1 - epsilon) if action == best else 0)
-    return action, mu
+    return (action,mu,'random' if random_choice else 'greedy') if return_source else (action,mu)
 
 
 def vtrace_targets(transitions, bootstrap):
@@ -66,7 +67,7 @@ def replay_rewards(puzzle, path):
     return last, total
 
 
-def replay_successes(net, records, rng, max_records=30, batch_size=256, stopped=lambda: False):
+def replay_successes(net, records, rng, max_records=30, batch_size=256, stopped=lambda: False, augment=True, on_update=None):
     """Auxiliary self-imitation: positive observed-return advantage only.
 
     This is deliberately separate from the fresh V-trace objective. Successful
@@ -80,7 +81,7 @@ def replay_successes(net, records, rng, max_records=30, batch_size=256, stopped=
         if stopped(): break
         original, original_path = records[int(index)]
         if any(not 0 <= int(a) < len(original.cars)*10 for a in original_path): continue
-        puzzle = permute_vehicles(original, rng)
+        puzzle = permute_vehicles(original, rng) if augment else original
         slots = {c.label: i for i, c in enumerate(puzzle.cars)}
         path = [slots[original.cars[int(a)//10].label]*10+int(a)%10 for a in original_path]
         state, seen, episode, solved = puzzle.start, {puzzle.start}, [], False
@@ -114,10 +115,11 @@ def replay_successes(net, records, rng, max_records=30, batch_size=256, stopped=
         losses.append(net.actor_critic(x, np.asarray([r[2] for r in batch]),
                                        np.maximum(returns, values), np.stack([r[1] for r in batch]),
                                        lr=0.0001, entropy_weight=0, policy_advantages=positive))
+        if on_update:on_update(losses[-1],len(batch))
     return losses, used, len(rows)
 
 
-def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limit=LIMIT, greedy=False, epsilon=1.0):
+def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limit=LIMIT, greedy=False, epsilon=1.0, on_update=None):
     """Validation actors may be displayed, but never contribute gradients."""
     if not 0 <= epsilon <= 1 or (any(learning) and epsilon == 0):
         raise ValueError('Training epsilon must be > 0 and <= 1')
@@ -129,13 +131,14 @@ def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limi
     status = ['solved' if p.is_solved(s) else 'running' for p, s in zip(puzzles, states)]
     totals = np.zeros(len(puzzles))
     last_rewards = [None] * len(puzzles)
+    selected_by = ['ready'] * len(puzzles)
     for i, p in enumerate(puzzles):
         if status[i] == "solved":
             last_rewards[i], totals[i] = replay_rewards(p, [])
     losses = []
     if stopped(): return None
     if live:
-        live({'states': list(states), 'paths': [list(p) for p in paths], 'statuses': list(status), 'step': 0, 'last_rewards': list(last_rewards), 'total_rewards': totals.tolist()})
+        live({'states': list(states), 'paths': [list(p) for p in paths], 'statuses': list(status), 'step': 0, 'last_rewards': list(last_rewards), 'total_rewards': totals.tolist(), 'selected_by':list(selected_by)})
     for chunk in range(0, limit, 16):
         transitions = []
         for step in range(chunk, min(chunk+16, limit)):
@@ -150,7 +153,7 @@ def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limi
             for row, i in enumerate(active):
                 if not masks[row].any():
                     status[i] = 'blocked'; continue
-                action, mu = epsilon_action(predictions[row, :140], masks[row], rng, 0.0 if greedy else epsilon)
+                action, mu, selected_by[i] = epsilon_action(predictions[row, :140], masks[row], rng, 0.0 if greedy else epsilon, return_source=True)
                 nxt = puzzles[i].move(states[i], action)
                 solved = puzzles[i].is_solved(nxt)
                 r = transition_reward(puzzles[i], nxt, action, seen[i]); totals[i] += r
@@ -167,7 +170,7 @@ def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limi
                     if greedy and repeated: status[i] = 'loop'
                     elif done: status[i] = 'limit'
             if live:
-                live({'states': list(states), 'paths': [list(p) for p in paths], 'statuses': list(status), 'step': step+1, 'last_rewards': list(last_rewards), 'total_rewards': totals.tolist()})
+                live({'states': list(states), 'paths': [list(p) for p in paths], 'statuses': list(status), 'step': step+1, 'last_rewards': list(last_rewards), 'total_rewards': totals.tolist(), 'selected_by':list(selected_by)})
         if transitions:
             bootstrap = np.zeros(len(puzzles))
             active = [i for i, s in enumerate(status) if learning[i] and s == 'running']
@@ -178,6 +181,7 @@ def episodes(net, puzzles, learning, rng, stopped=lambda: False, live=None, limi
                                    np.array([t[3] for t in transitions]), targets,
                                    np.stack([t[2] for t in transitions]), policy_advantages=advantages)
             losses.append(loss)
+            if on_update:on_update(loss,len(transitions))
         if all(s != 'running' for s in status): break
     return paths, status, totals, losses
 

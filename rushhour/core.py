@@ -102,122 +102,20 @@ def app_level_name(index):
     return f'{("Easy", "Medium", "Hard", "Expert")[group]}{number + 1:03d}'
 
 
-def parse_line(line, index=1, include_solution=True):
-    if not re.fullmatch(r'[0-3][a-z-]{36}(?:[a-z][udlr][1-5])+', line):
-        raise ValueError(f'Line {index}: unsupported puzzle format')
-    board, commands = line[1:37], line[37:]
-    labels = ['x'] + sorted(set(board) - {'-', 'x'})
-    if 'x' not in board or len(labels) > 14:
-        raise ValueError(f'Line {index}: missing target or more than 14 vehicles')
-    cars, state = [], []
-    for label in labels:
-        cells = [j for j, c in enumerate(board) if c == label]
-        if len(cells) not in (2, 3):
-            raise ValueError('Invalid vehicle length')
-        horizontal = cells[1] == cells[0] + 1
-        lane = cells[0] // 6 if horizontal else cells[0] % 6
-        pos = cells[0] % 6 if horizontal else cells[0] // 6
-        expected = [(lane * 6 + pos + k) if horizontal else (pos + k) * 6 + lane
-                    for k in range(len(cells))]
-        if cells != expected:
-            raise ValueError('Non-contiguous vehicle')
-        cars.append(Vehicle(label, horizontal, len(cells), lane))
-        state.append(pos)
-    if not cars[0].horizontal or cars[0].lane != 2 or cars[0].length != 2:
-        raise ValueError('Expected a length-2 horizontal target in row 3')
-    # Keep the raw difficulty metadata, but label by the app's level selector.
-    p = Puzzle(app_level_name(index), int(line[0]), tuple(cars), tuple(state), source='APK reference')
-    p.board(p.start)
-    if not include_solution:
-        p.source = 'APK initial state / RL'
-        return p
-    actions = []
-    current = p.start
-    for k in range(0, len(commands), 3):
-        label, direction, distance = commands[k:k+3]
-        i = labels.index(label)
-        if (direction in 'lr') != cars[i].horizontal or current is None:
-            raise ValueError('Invalid direction or commands after exit')
-        action = i * 10 + (5 if direction in 'rd' else 0) + int(distance) - 1
-        current = p.move(current, action)
-        actions.append(action)
-    if current is not None:
-        raise ValueError('Reference solution does not reach the exit')
-    p.solution = tuple(actions)
-    return p
+def parse_line(*args, **kwargs):
+    raise RuntimeError("parse_line is disabled in the rewards-only research package")
 
 
-def load_apk(path):
-    # Read data only. Never execute APK or extract its executable files.
-    digest = hashlib.sha256(Path(path).read_bytes()).hexdigest()
-    with zipfile.ZipFile(path) as z:
-        info = z.getinfo('res/raw/puzzles.txt')
-        if info.file_size > 10_000_000:
-            raise ValueError('Puzzle resource exceeds 10 MB limit')
-        data = z.read(info)
-        lines = data.decode('utf-8-sig').splitlines()
-        # Screenshot-verified profile: Easy001 is the DEX-embedded board;
-        # raw lines 1/625/1250/1875 match Easy002/Medium001/Hard001/Expert001.
-        # Restrict reconstruction to the exact audited APK, never guess for others.
-        if digest == '89ed0e4dedaac48f9d0f63374d13b5b57aead2a4257ff539d3e4fe05cbd94771':
-            candidates = re.findall(rb'[0-3][a-z-]{36}(?:[a-z][udlr][1-5])+', z.read('classes.dex'))
-            if len(lines) != 2499 or len(candidates) != 1:
-                raise ValueError('Audited APK ordering profile does not match')
-            lines.insert(0, candidates[0].decode('ascii'))
-        else:
-            raise ValueError('이 APK는 앱 표시 순서가 검증되지 않았습니다. 지원 APK를 선택하세요.')
-    # RL import retains initial boards only, never reference action sequences.
-    puzzles = [parse_line(s.strip(), i + 1, include_solution=False) for i, s in enumerate(lines)]
-    for i, (puzzle, line) in enumerate(zip(puzzles, lines)):
-        puzzle.minimum_possible = 13 if i == 0 else sum(int(c) for c in line.strip()[39::3])
-        puzzle.minimum_source = 'user-confirmed screen' if i == 0 else f'APK puzzles.txt line {i}'
-    puzzles[0].source = 'APK DEX / screenshot-confirmed Easy001'
-    return puzzles, digest
+def load_apk(*args, **kwargs):
+    raise RuntimeError("load_apk is disabled in the rewards-only research package")
 
 
-def shortest(p, start=None, limit=100000):
-    start = p.start if start is None else start
-    queue, parents = deque([start]), {start: None}
-    while queue:
-        state = queue.popleft()
-        for a in p.actions(state):
-            nxt = p.move(state, a)
-            if nxt is None:
-                path = [a]
-                while parents[state] is not None:
-                    state, previous = parents[state]
-                    path.append(previous)
-                return tuple(reversed(path))
-            if nxt not in parents:
-                parents[nxt] = (state, a)
-                queue.append(nxt)
-                if len(parents) > limit:
-                    raise ValueError('BFS state limit reached')
-    raise ValueError('Unsolvable puzzle')
+def shortest(*args, **kwargs):
+    raise RuntimeError("shortest is disabled in the rewards-only research package")
 
 
-def demo_puzzles(count=200, seed=7):
-    """Independent synthetic layouts, not APK content. Intentionally easy smoke tests."""
-    rng, result, seen = random.Random(seed), [], set()
-    while len(result) < count:
-        cars = [Vehicle('x', True, 2, 2)]
-        state = [0]
-        for j, lane in enumerate(rng.sample([2, 3, 4, 5], rng.randint(1, 4))):
-            cars.append(Vehicle(chr(97+j), False, rng.choice([2, 3]), lane))
-            state.append(rng.randint(0, 3))
-        p = Puzzle(f'DEMO-{len(result)+1:03d}', 0, tuple(cars), tuple(state))
-        for _ in range(rng.randint(4, 20)):
-            candidates = [(a, p.move(tuple(state), a)) for a in p.actions(tuple(state))]
-            candidates = [(a, s) for a, s in candidates if s is not None]
-            if candidates:
-                _, state = rng.choice(candidates)
-        p.start = tuple(state)
-        key = (p.cars, p.start)
-        if key not in seen:
-            seen.add(key)
-            p.solution = shortest(p)
-            result.append(p)
-    return result
+def demo_puzzles(*args, **kwargs):
+    raise RuntimeError("demo_puzzles is disabled in the rewards-only research package")
 
 
 def split(puzzles):
@@ -253,19 +151,8 @@ def permute_vehicles(puzzle, rng):
                   minimum_source=puzzle.minimum_source)
 
 
-def examples(puzzles):
-    xs, ys, vs, masks = [], [], [], []
-    for p in puzzles:
-        state = p.start
-        for step, action in enumerate(p.solution):
-            xs.append(p.encode(state))
-            ys.append(action)
-            vs.append((len(p.solution) - step) / 64.0)
-            mask = np.zeros(140, dtype=bool)
-            mask[p.actions(state)] = True
-            masks.append(mask)
-            state = p.move(state, action)
-    return np.array(xs), np.array(ys), np.array(vs, dtype=np.float32), np.array(masks)
+def examples(*args, **kwargs):
+    raise RuntimeError("examples is disabled in the rewards-only research package")
 
 
 def display_moves(puzzle, path, solved=False, final_state=None):

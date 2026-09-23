@@ -1,0 +1,2336 @@
+{
+  "method": "one uniform random pass; no network learning; observed cycles erased only for analysis",
+  "total": 2500,
+  "solved": 257,
+  "by_mode": {
+    "Easy": 211,
+    "Medium": 36,
+    "Hard": 9,
+    "Expert": 1
+  },
+  "means": {
+    "raw_actions": 177.66536964980546,
+    "loop_free_actions": 69.59143968871595,
+    "raw_moves": 257.3579766536965,
+    "loop_free_moves": 104.39299610894942,
+    "raw_return": -2.811400778210106,
+    "loop_free_return": -0.04392996108949478
+  },
+  "raw_positive": 14,
+  "loop_free_positive": 133,
+  "records": [
+    {
+      "name": "Easy558",
+      "raw_actions": 111,
+      "loop_free_actions": 100,
+      "raw_moves": 178,
+      "loop_free_moves": 164,
+      "raw_return": -0.9300000000000013,
+      "loop_free_return": -0.6400000000000012
+    },
+    {
+      "name": "Medium089",
+      "raw_actions": 76,
+      "loop_free_actions": 30,
+      "raw_moves": 107,
+      "loop_free_moves": 45,
+      "raw_return": -0.910000000000001,
+      "loop_free_return": 0.5499999999999998
+    },
+    {
+      "name": "Easy210",
+      "raw_actions": 248,
+      "loop_free_actions": 43,
+      "raw_moves": 386,
+      "loop_free_moves": 70,
+      "raw_return": -4.599999999999979,
+      "loop_free_return": 0.2999999999999996
+    },
+    {
+      "name": "Easy046",
+      "raw_actions": 124,
+      "loop_free_actions": 66,
+      "raw_moves": 161,
+      "loop_free_moves": 81,
+      "raw_return": -1.180000000000001,
+      "loop_free_return": 0.1899999999999994
+    },
+    {
+      "name": "Easy435",
+      "raw_actions": 195,
+      "loop_free_actions": 89,
+      "raw_moves": 279,
+      "loop_free_moves": 119,
+      "raw_return": -2.749999999999991,
+      "loop_free_return": -0.1900000000000006
+    },
+    {
+      "name": "Hard015",
+      "raw_actions": 296,
+      "loop_free_actions": 86,
+      "raw_moves": 443,
+      "loop_free_moves": 133,
+      "raw_return": -6.849999999999975,
+      "loop_free_return": -0.33000000000000096
+    },
+    {
+      "name": "Easy343",
+      "raw_actions": 163,
+      "loop_free_actions": 44,
+      "raw_moves": 225,
+      "loop_free_moves": 63,
+      "raw_return": -2.1799999999999953,
+      "loop_free_return": 0.36999999999999966
+    },
+    {
+      "name": "Easy216",
+      "raw_actions": 257,
+      "loop_free_actions": 59,
+      "raw_moves": 391,
+      "loop_free_moves": 95,
+      "raw_return": -5.009999999999977,
+      "loop_free_return": 0.04999999999999938
+    },
+    {
+      "name": "Easy169",
+      "raw_actions": 171,
+      "loop_free_actions": 105,
+      "raw_moves": 241,
+      "loop_free_moves": 155,
+      "raw_return": -2.159999999999994,
+      "loop_free_return": -0.5500000000000012
+    },
+    {
+      "name": "Easy002",
+      "raw_actions": 226,
+      "loop_free_actions": 48,
+      "raw_moves": 374,
+      "loop_free_moves": 84,
+      "raw_return": -4.479999999999984,
+      "loop_free_return": 0.15999999999999948
+    },
+    {
+      "name": "Easy081",
+      "raw_actions": 223,
+      "loop_free_actions": 58,
+      "raw_moves": 332,
+      "loop_free_moves": 86,
+      "raw_return": -4.2999999999999865,
+      "loop_free_return": 0.13999999999999946
+    },
+    {
+      "name": "Hard557",
+      "raw_actions": 223,
+      "loop_free_actions": 110,
+      "raw_moves": 291,
+      "loop_free_moves": 149,
+      "raw_return": -3.499999999999984,
+      "loop_free_return": -0.4900000000000011
+    },
+    {
+      "name": "Easy009",
+      "raw_actions": 73,
+      "loop_free_actions": 36,
+      "raw_moves": 107,
+      "loop_free_moves": 53,
+      "raw_return": -0.7900000000000009,
+      "loop_free_return": 0.46999999999999975
+    },
+    {
+      "name": "Easy030",
+      "raw_actions": 246,
+      "loop_free_actions": 109,
+      "raw_moves": 393,
+      "loop_free_moves": 189,
+      "raw_return": -3.7399999999999816,
+      "loop_free_return": -0.8900000000000012
+    },
+    {
+      "name": "Easy537",
+      "raw_actions": 232,
+      "loop_free_actions": 100,
+      "raw_moves": 330,
+      "loop_free_moves": 146,
+      "raw_return": -3.1699999999999875,
+      "loop_free_return": -0.4600000000000011
+    },
+    {
+      "name": "Easy437",
+      "raw_actions": 123,
+      "loop_free_actions": 91,
+      "raw_moves": 173,
+      "loop_free_moves": 131,
+      "raw_return": -1.0900000000000012,
+      "loop_free_return": -0.31000000000000094
+    },
+    {
+      "name": "Easy401",
+      "raw_actions": 268,
+      "loop_free_actions": 161,
+      "raw_moves": 377,
+      "loop_free_moves": 237,
+      "raw_return": -3.9099999999999797,
+      "loop_free_return": -1.369999999999999
+    },
+    {
+      "name": "Easy158",
+      "raw_actions": 228,
+      "loop_free_actions": 103,
+      "raw_moves": 332,
+      "loop_free_moves": 146,
+      "raw_return": -3.189999999999986,
+      "loop_free_return": -0.46000000000000096
+    },
+    {
+      "name": "Medium514",
+      "raw_actions": 188,
+      "loop_free_actions": 119,
+      "raw_moves": 285,
+      "loop_free_moves": 179,
+      "raw_return": -2.4799999999999938,
+      "loop_free_return": -0.7900000000000014
+    },
+    {
+      "name": "Easy394",
+      "raw_actions": 235,
+      "loop_free_actions": 64,
+      "raw_moves": 407,
+      "loop_free_moves": 113,
+      "raw_return": -4.1499999999999835,
+      "loop_free_return": -0.13000000000000056
+    },
+    {
+      "name": "Easy120",
+      "raw_actions": 104,
+      "loop_free_actions": 22,
+      "raw_moves": 150,
+      "loop_free_moves": 34,
+      "raw_return": -0.9800000000000013,
+      "loop_free_return": 0.6599999999999999
+    },
+    {
+      "name": "Easy187",
+      "raw_actions": 177,
+      "loop_free_actions": 29,
+      "raw_moves": 211,
+      "loop_free_moves": 43,
+      "raw_return": -3.419999999999991,
+      "loop_free_return": 0.5699999999999997
+    },
+    {
+      "name": "Easy480",
+      "raw_actions": 155,
+      "loop_free_actions": 102,
+      "raw_moves": 213,
+      "loop_free_moves": 139,
+      "raw_return": -1.9099999999999953,
+      "loop_free_return": -0.390000000000001
+    },
+    {
+      "name": "Easy179",
+      "raw_actions": 237,
+      "loop_free_actions": 85,
+      "raw_moves": 354,
+      "loop_free_moves": 130,
+      "raw_return": -3.2299999999999858,
+      "loop_free_return": -0.30000000000000093
+    },
+    {
+      "name": "Easy114",
+      "raw_actions": 272,
+      "loop_free_actions": 52,
+      "raw_moves": 427,
+      "loop_free_moves": 75,
+      "raw_return": -5.189999999999973,
+      "loop_free_return": 0.24999999999999956
+    },
+    {
+      "name": "Easy294",
+      "raw_actions": 172,
+      "loop_free_actions": 40,
+      "raw_moves": 225,
+      "loop_free_moves": 57,
+      "raw_return": -2.6599999999999926,
+      "loop_free_return": 0.4299999999999997
+    },
+    {
+      "name": "Easy413",
+      "raw_actions": 51,
+      "loop_free_actions": 27,
+      "raw_moves": 83,
+      "loop_free_moves": 45,
+      "raw_return": -0.1600000000000006,
+      "loop_free_return": 0.5499999999999998
+    },
+    {
+      "name": "Easy332",
+      "raw_actions": 280,
+      "loop_free_actions": 98,
+      "raw_moves": 393,
+      "loop_free_moves": 141,
+      "raw_return": -3.919999999999977,
+      "loop_free_return": -0.41000000000000103
+    },
+    {
+      "name": "Easy049",
+      "raw_actions": 176,
+      "loop_free_actions": 134,
+      "raw_moves": 256,
+      "loop_free_moves": 198,
+      "raw_return": -2.159999999999992,
+      "loop_free_return": -0.9800000000000015
+    },
+    {
+      "name": "Easy423",
+      "raw_actions": 96,
+      "loop_free_actions": 67,
+      "raw_moves": 134,
+      "loop_free_moves": 96,
+      "raw_return": -0.610000000000001,
+      "loop_free_return": 0.03999999999999937
+    },
+    {
+      "name": "Easy117",
+      "raw_actions": 272,
+      "loop_free_actions": 93,
+      "raw_moves": 430,
+      "loop_free_moves": 156,
+      "raw_return": -4.739999999999977,
+      "loop_free_return": -0.5600000000000009
+    },
+    {
+      "name": "Easy076",
+      "raw_actions": 101,
+      "loop_free_actions": 77,
+      "raw_moves": 156,
+      "loop_free_moves": 116,
+      "raw_return": -0.9200000000000013,
+      "loop_free_return": -0.1600000000000008
+    },
+    {
+      "name": "Easy029",
+      "raw_actions": 58,
+      "loop_free_actions": 41,
+      "raw_moves": 89,
+      "loop_free_moves": 63,
+      "raw_return": -0.0400000000000007,
+      "loop_free_return": 0.36999999999999966
+    },
+    {
+      "name": "Medium583",
+      "raw_actions": 257,
+      "loop_free_actions": 100,
+      "raw_moves": 363,
+      "loop_free_moves": 141,
+      "raw_return": -3.9499999999999744,
+      "loop_free_return": -0.4100000000000009
+    },
+    {
+      "name": "Easy126",
+      "raw_actions": 265,
+      "loop_free_actions": 52,
+      "raw_moves": 409,
+      "loop_free_moves": 87,
+      "raw_return": -5.2499999999999725,
+      "loop_free_return": 0.12999999999999945
+    },
+    {
+      "name": "Easy109",
+      "raw_actions": 168,
+      "loop_free_actions": 96,
+      "raw_moves": 263,
+      "loop_free_moves": 149,
+      "raw_return": -2.6799999999999935,
+      "loop_free_return": -0.4900000000000009
+    },
+    {
+      "name": "Easy084",
+      "raw_actions": 153,
+      "loop_free_actions": 30,
+      "raw_moves": 211,
+      "loop_free_moves": 43,
+      "raw_return": -3.569999999999995,
+      "loop_free_return": 0.5699999999999998
+    },
+    {
+      "name": "Easy142",
+      "raw_actions": 165,
+      "loop_free_actions": 75,
+      "raw_moves": 247,
+      "loop_free_moves": 115,
+      "raw_return": -2.249999999999992,
+      "loop_free_return": -0.1500000000000008
+    },
+    {
+      "name": "Easy136",
+      "raw_actions": 45,
+      "loop_free_actions": 24,
+      "raw_moves": 67,
+      "loop_free_moves": 37,
+      "raw_return": 0.05999999999999961,
+      "loop_free_return": 0.63
+    },
+    {
+      "name": "Easy314",
+      "raw_actions": 142,
+      "loop_free_actions": 80,
+      "raw_moves": 215,
+      "loop_free_moves": 117,
+      "raw_return": -1.9599999999999917,
+      "loop_free_return": -0.1700000000000006
+    },
+    {
+      "name": "Easy051",
+      "raw_actions": 24,
+      "loop_free_actions": 19,
+      "raw_moves": 37,
+      "loop_free_moves": 31,
+      "raw_return": 0.5699999999999998,
+      "loop_free_return": 0.69
+    },
+    {
+      "name": "Hard219",
+      "raw_actions": 234,
+      "loop_free_actions": 96,
+      "raw_moves": 306,
+      "loop_free_moves": 128,
+      "raw_return": -3.3799999999999755,
+      "loop_free_return": -0.2800000000000009
+    },
+    {
+      "name": "Easy074",
+      "raw_actions": 142,
+      "loop_free_actions": 75,
+      "raw_moves": 212,
+      "loop_free_moves": 110,
+      "raw_return": -1.7199999999999973,
+      "loop_free_return": -0.10000000000000053
+    },
+    {
+      "name": "Easy436",
+      "raw_actions": 286,
+      "loop_free_actions": 118,
+      "raw_moves": 447,
+      "loop_free_moves": 199,
+      "raw_return": -5.029999999999971,
+      "loop_free_return": -0.9900000000000015
+    },
+    {
+      "name": "Medium509",
+      "raw_actions": 298,
+      "loop_free_actions": 49,
+      "raw_moves": 383,
+      "loop_free_moves": 69,
+      "raw_return": -4.149999999999974,
+      "loop_free_return": 0.3099999999999996
+    },
+    {
+      "name": "Easy264",
+      "raw_actions": 109,
+      "loop_free_actions": 32,
+      "raw_moves": 155,
+      "loop_free_moves": 45,
+      "raw_return": -1.509999999999998,
+      "loop_free_return": 0.5499999999999998
+    },
+    {
+      "name": "Easy130",
+      "raw_actions": 44,
+      "loop_free_actions": 42,
+      "raw_moves": 76,
+      "loop_free_moves": 72,
+      "raw_return": 0.20999999999999963,
+      "loop_free_return": 0.2799999999999997
+    },
+    {
+      "name": "Easy018",
+      "raw_actions": 132,
+      "loop_free_actions": 104,
+      "raw_moves": 218,
+      "loop_free_moves": 176,
+      "raw_return": -1.599999999999998,
+      "loop_free_return": -0.7600000000000011
+    },
+    {
+      "name": "Medium211",
+      "raw_actions": 163,
+      "loop_free_actions": 66,
+      "raw_moves": 229,
+      "loop_free_moves": 99,
+      "raw_return": -2.549999999999993,
+      "loop_free_return": 0.009999999999999343
+    },
+    {
+      "name": "Easy078",
+      "raw_actions": 277,
+      "loop_free_actions": 76,
+      "raw_moves": 399,
+      "loop_free_moves": 119,
+      "raw_return": -4.519999999999975,
+      "loop_free_return": -0.19000000000000083
+    },
+    {
+      "name": "Easy147",
+      "raw_actions": 232,
+      "loop_free_actions": 74,
+      "raw_moves": 366,
+      "loop_free_moves": 102,
+      "raw_return": -3.4399999999999817,
+      "loop_free_return": -0.020000000000000684
+    },
+    {
+      "name": "Easy344",
+      "raw_actions": 187,
+      "loop_free_actions": 110,
+      "raw_moves": 266,
+      "loop_free_moves": 168,
+      "raw_return": -2.649999999999991,
+      "loop_free_return": -0.6800000000000013
+    },
+    {
+      "name": "Easy186",
+      "raw_actions": 232,
+      "loop_free_actions": 66,
+      "raw_moves": 317,
+      "loop_free_moves": 95,
+      "raw_return": -3.699999999999984,
+      "loop_free_return": 0.04999999999999938
+    },
+    {
+      "name": "Easy623",
+      "raw_actions": 73,
+      "loop_free_actions": 42,
+      "raw_moves": 98,
+      "loop_free_moves": 60,
+      "raw_return": -0.4900000000000009,
+      "loop_free_return": 0.3999999999999997
+    },
+    {
+      "name": "Easy484",
+      "raw_actions": 276,
+      "loop_free_actions": 154,
+      "raw_moves": 386,
+      "loop_free_moves": 222,
+      "raw_return": -4.419999999999974,
+      "loop_free_return": -1.2200000000000009
+    },
+    {
+      "name": "Easy547",
+      "raw_actions": 189,
+      "loop_free_actions": 71,
+      "raw_moves": 282,
+      "loop_free_moves": 114,
+      "raw_return": -2.929999999999994,
+      "loop_free_return": -0.1400000000000008
+    },
+    {
+      "name": "Easy269",
+      "raw_actions": 95,
+      "loop_free_actions": 61,
+      "raw_moves": 177,
+      "loop_free_moves": 119,
+      "raw_return": -0.9800000000000013,
+      "loop_free_return": -0.19000000000000083
+    },
+    {
+      "name": "Easy039",
+      "raw_actions": 197,
+      "loop_free_actions": 100,
+      "raw_moves": 283,
+      "loop_free_moves": 151,
+      "raw_return": -2.939999999999987,
+      "loop_free_return": -0.5100000000000011
+    },
+    {
+      "name": "Easy242",
+      "raw_actions": 156,
+      "loop_free_actions": 40,
+      "raw_moves": 218,
+      "loop_free_moves": 56,
+      "raw_return": -2.919999999999995,
+      "loop_free_return": 0.4399999999999996
+    },
+    {
+      "name": "Hard261",
+      "raw_actions": 236,
+      "loop_free_actions": 104,
+      "raw_moves": 314,
+      "loop_free_moves": 142,
+      "raw_return": -4.419999999999976,
+      "loop_free_return": -0.42000000000000104
+    },
+    {
+      "name": "Easy170",
+      "raw_actions": 183,
+      "loop_free_actions": 23,
+      "raw_moves": 254,
+      "loop_free_moves": 36,
+      "raw_return": -3.2199999999999886,
+      "loop_free_return": 0.6399999999999999
+    },
+    {
+      "name": "Easy553",
+      "raw_actions": 206,
+      "loop_free_actions": 80,
+      "raw_moves": 260,
+      "loop_free_moves": 104,
+      "raw_return": -2.8299999999999876,
+      "loop_free_return": -0.0400000000000007
+    },
+    {
+      "name": "Medium388",
+      "raw_actions": 299,
+      "loop_free_actions": 89,
+      "raw_moves": 382,
+      "loop_free_moves": 116,
+      "raw_return": -5.879999999999967,
+      "loop_free_return": -0.1600000000000008
+    },
+    {
+      "name": "Easy110",
+      "raw_actions": 202,
+      "loop_free_actions": 69,
+      "raw_moves": 254,
+      "loop_free_moves": 90,
+      "raw_return": -3.489999999999988,
+      "loop_free_return": 0.09999999999999942
+    },
+    {
+      "name": "Hard174",
+      "raw_actions": 293,
+      "loop_free_actions": 128,
+      "raw_moves": 382,
+      "loop_free_moves": 186,
+      "raw_return": -4.889999999999967,
+      "loop_free_return": -0.8600000000000014
+    },
+    {
+      "name": "Easy231",
+      "raw_actions": 275,
+      "loop_free_actions": 55,
+      "raw_moves": 356,
+      "loop_free_moves": 74,
+      "raw_return": -5.739999999999972,
+      "loop_free_return": 0.25999999999999956
+    },
+    {
+      "name": "Easy517",
+      "raw_actions": 195,
+      "loop_free_actions": 75,
+      "raw_moves": 313,
+      "loop_free_moves": 123,
+      "raw_return": -3.209999999999988,
+      "loop_free_return": -0.23000000000000087
+    },
+    {
+      "name": "Easy128",
+      "raw_actions": 137,
+      "loop_free_actions": 35,
+      "raw_moves": 153,
+      "loop_free_moves": 45,
+      "raw_return": -2.4799999999999924,
+      "loop_free_return": 0.5499999999999998
+    },
+    {
+      "name": "Easy299",
+      "raw_actions": 150,
+      "loop_free_actions": 39,
+      "raw_moves": 226,
+      "loop_free_moves": 54,
+      "raw_return": -2.5799999999999974,
+      "loop_free_return": 0.45999999999999963
+    },
+    {
+      "name": "Easy503",
+      "raw_actions": 81,
+      "loop_free_actions": 63,
+      "raw_moves": 119,
+      "loop_free_moves": 93,
+      "raw_return": -0.4900000000000009,
+      "loop_free_return": 0.0699999999999994
+    },
+    {
+      "name": "Easy091",
+      "raw_actions": 218,
+      "loop_free_actions": 48,
+      "raw_moves": 346,
+      "loop_free_moves": 78,
+      "raw_return": -4.649999999999983,
+      "loop_free_return": 0.21999999999999953
+    },
+    {
+      "name": "Easy236",
+      "raw_actions": 166,
+      "loop_free_actions": 92,
+      "raw_moves": 274,
+      "loop_free_moves": 156,
+      "raw_return": -2.519999999999991,
+      "loop_free_return": -0.5600000000000012
+    },
+    {
+      "name": "Easy217",
+      "raw_actions": 125,
+      "loop_free_actions": 80,
+      "raw_moves": 152,
+      "loop_free_moves": 100,
+      "raw_return": -1.3599999999999985,
+      "loop_free_return": -6.661338147750939e-16
+    },
+    {
+      "name": "Easy304",
+      "raw_actions": 246,
+      "loop_free_actions": 137,
+      "raw_moves": 368,
+      "loop_free_moves": 208,
+      "raw_return": -3.7899999999999787,
+      "loop_free_return": -1.0800000000000012
+    },
+    {
+      "name": "Easy330",
+      "raw_actions": 109,
+      "loop_free_actions": 44,
+      "raw_moves": 125,
+      "loop_free_moves": 53,
+      "raw_return": -1.0900000000000012,
+      "loop_free_return": 0.4699999999999997
+    },
+    {
+      "name": "Easy284",
+      "raw_actions": 274,
+      "loop_free_actions": 74,
+      "raw_moves": 338,
+      "loop_free_moves": 102,
+      "raw_return": -3.8799999999999804,
+      "loop_free_return": -0.020000000000000684
+    },
+    {
+      "name": "Easy037",
+      "raw_actions": 279,
+      "loop_free_actions": 68,
+      "raw_moves": 347,
+      "loop_free_moves": 83,
+      "raw_return": -5.769999999999973,
+      "loop_free_return": 0.16999999999999948
+    },
+    {
+      "name": "Easy611",
+      "raw_actions": 136,
+      "loop_free_actions": 64,
+      "raw_moves": 215,
+      "loop_free_moves": 97,
+      "raw_return": -2.0799999999999956,
+      "loop_free_return": 0.02999999999999947
+    },
+    {
+      "name": "Easy088",
+      "raw_actions": 258,
+      "loop_free_actions": 75,
+      "raw_moves": 366,
+      "loop_free_moves": 106,
+      "raw_return": -4.279999999999976,
+      "loop_free_return": -0.06000000000000072
+    },
+    {
+      "name": "Easy017",
+      "raw_actions": 266,
+      "loop_free_actions": 23,
+      "raw_moves": 361,
+      "loop_free_moves": 35,
+      "raw_return": -9.089999999999966,
+      "loop_free_return": 0.6499999999999999
+    },
+    {
+      "name": "Easy235",
+      "raw_actions": 43,
+      "loop_free_actions": 29,
+      "raw_moves": 66,
+      "loop_free_moves": 44,
+      "raw_return": 0.12999999999999967,
+      "loop_free_return": 0.5599999999999998
+    },
+    {
+      "name": "Easy135",
+      "raw_actions": 83,
+      "loop_free_actions": 30,
+      "raw_moves": 114,
+      "loop_free_moves": 44,
+      "raw_return": -0.8600000000000012,
+      "loop_free_return": 0.5599999999999998
+    },
+    {
+      "name": "Easy112",
+      "raw_actions": 64,
+      "loop_free_actions": 58,
+      "raw_moves": 109,
+      "loop_free_moves": 99,
+      "raw_return": -0.21000000000000085,
+      "loop_free_return": 0.009999999999999343
+    },
+    {
+      "name": "Easy538",
+      "raw_actions": 90,
+      "loop_free_actions": 63,
+      "raw_moves": 148,
+      "loop_free_moves": 104,
+      "raw_return": -0.7800000000000011,
+      "loop_free_return": -0.04000000000000048
+    },
+    {
+      "name": "Medium105",
+      "raw_actions": 256,
+      "loop_free_actions": 130,
+      "raw_moves": 335,
+      "loop_free_moves": 173,
+      "raw_return": -3.069999999999979,
+      "loop_free_return": -0.7300000000000013
+    },
+    {
+      "name": "Easy151",
+      "raw_actions": 196,
+      "loop_free_actions": 36,
+      "raw_moves": 265,
+      "loop_free_moves": 51,
+      "raw_return": -4.679999999999986,
+      "loop_free_return": 0.48999999999999977
+    },
+    {
+      "name": "Easy176",
+      "raw_actions": 108,
+      "loop_free_actions": 95,
+      "raw_moves": 156,
+      "loop_free_moves": 138,
+      "raw_return": -0.7400000000000009,
+      "loop_free_return": -0.3800000000000008
+    },
+    {
+      "name": "Easy005",
+      "raw_actions": 194,
+      "loop_free_actions": 16,
+      "raw_moves": 303,
+      "loop_free_moves": 29,
+      "raw_return": -6.649999999999992,
+      "loop_free_return": 0.71
+    },
+    {
+      "name": "Easy107",
+      "raw_actions": 96,
+      "loop_free_actions": 21,
+      "raw_moves": 127,
+      "loop_free_moves": 29,
+      "raw_return": -1.080000000000001,
+      "loop_free_return": 0.71
+    },
+    {
+      "name": "Medium143",
+      "raw_actions": 105,
+      "loop_free_actions": 59,
+      "raw_moves": 148,
+      "loop_free_moves": 84,
+      "raw_return": -1.1100000000000008,
+      "loop_free_return": 0.15999999999999948
+    },
+    {
+      "name": "Easy219",
+      "raw_actions": 187,
+      "loop_free_actions": 84,
+      "raw_moves": 310,
+      "loop_free_moves": 138,
+      "raw_return": -3.4799999999999884,
+      "loop_free_return": -0.380000000000001
+    },
+    {
+      "name": "Easy141",
+      "raw_actions": 198,
+      "loop_free_actions": 18,
+      "raw_moves": 222,
+      "loop_free_moves": 26,
+      "raw_return": -3.979999999999994,
+      "loop_free_return": 0.74
+    },
+    {
+      "name": "Easy145",
+      "raw_actions": 73,
+      "loop_free_actions": 53,
+      "raw_moves": 109,
+      "loop_free_moves": 75,
+      "raw_return": -0.4200000000000008,
+      "loop_free_return": 0.24999999999999967
+    },
+    {
+      "name": "Medium040",
+      "raw_actions": 201,
+      "loop_free_actions": 89,
+      "raw_moves": 291,
+      "loop_free_moves": 137,
+      "raw_return": -2.809999999999987,
+      "loop_free_return": -0.3700000000000008
+    },
+    {
+      "name": "Easy240",
+      "raw_actions": 124,
+      "loop_free_actions": 40,
+      "raw_moves": 171,
+      "loop_free_moves": 55,
+      "raw_return": -1.5799999999999985,
+      "loop_free_return": 0.44999999999999973
+    },
+    {
+      "name": "Medium443",
+      "raw_actions": 254,
+      "loop_free_actions": 57,
+      "raw_moves": 347,
+      "loop_free_moves": 79,
+      "raw_return": -4.599999999999982,
+      "loop_free_return": 0.20999999999999952
+    },
+    {
+      "name": "Easy118",
+      "raw_actions": 164,
+      "loop_free_actions": 30,
+      "raw_moves": 193,
+      "loop_free_moves": 43,
+      "raw_return": -2.7599999999999936,
+      "loop_free_return": 0.5699999999999998
+    },
+    {
+      "name": "Easy021",
+      "raw_actions": 283,
+      "loop_free_actions": 65,
+      "raw_moves": 497,
+      "loop_free_moves": 121,
+      "raw_return": -6.1599999999999735,
+      "loop_free_return": -0.21000000000000085
+    },
+    {
+      "name": "Easy313",
+      "raw_actions": 93,
+      "loop_free_actions": 40,
+      "raw_moves": 137,
+      "loop_free_moves": 63,
+      "raw_return": -0.7000000000000011,
+      "loop_free_return": 0.36999999999999966
+    },
+    {
+      "name": "Medium175",
+      "raw_actions": 202,
+      "loop_free_actions": 138,
+      "raw_moves": 299,
+      "loop_free_moves": 203,
+      "raw_return": -2.7099999999999893,
+      "loop_free_return": -1.0300000000000016
+    },
+    {
+      "name": "Easy250",
+      "raw_actions": 154,
+      "loop_free_actions": 106,
+      "raw_moves": 231,
+      "loop_free_moves": 155,
+      "raw_return": -1.9699999999999955,
+      "loop_free_return": -0.5500000000000009
+    },
+    {
+      "name": "Easy045",
+      "raw_actions": 116,
+      "loop_free_actions": 70,
+      "raw_moves": 156,
+      "loop_free_moves": 100,
+      "raw_return": -1.0700000000000012,
+      "loop_free_return": -6.661338147750939e-16
+    },
+    {
+      "name": "Easy384",
+      "raw_actions": 148,
+      "loop_free_actions": 100,
+      "raw_moves": 240,
+      "loop_free_moves": 166,
+      "raw_return": -2.1799999999999944,
+      "loop_free_return": -0.660000000000001
+    },
+    {
+      "name": "Easy026",
+      "raw_actions": 52,
+      "loop_free_actions": 38,
+      "raw_moves": 80,
+      "loop_free_moves": 62,
+      "raw_return": -0.010000000000000675,
+      "loop_free_return": 0.37999999999999967
+    },
+    {
+      "name": "Medium091",
+      "raw_actions": 137,
+      "loop_free_actions": 48,
+      "raw_moves": 188,
+      "loop_free_moves": 66,
+      "raw_return": -1.779999999999996,
+      "loop_free_return": 0.33999999999999964
+    },
+    {
+      "name": "Easy124",
+      "raw_actions": 164,
+      "loop_free_actions": 49,
+      "raw_moves": 218,
+      "loop_free_moves": 66,
+      "raw_return": -3.039999999999993,
+      "loop_free_return": 0.33999999999999964
+    },
+    {
+      "name": "Easy580",
+      "raw_actions": 159,
+      "loop_free_actions": 48,
+      "raw_moves": 240,
+      "loop_free_moves": 72,
+      "raw_return": -2.3299999999999916,
+      "loop_free_return": 0.2799999999999996
+    },
+    {
+      "name": "Easy052",
+      "raw_actions": 194,
+      "loop_free_actions": 81,
+      "raw_moves": 315,
+      "loop_free_moves": 127,
+      "raw_return": -3.4399999999999875,
+      "loop_free_return": -0.2700000000000007
+    },
+    {
+      "name": "Medium309",
+      "raw_actions": 293,
+      "loop_free_actions": 97,
+      "raw_moves": 419,
+      "loop_free_moves": 145,
+      "raw_return": -4.8999999999999755,
+      "loop_free_return": -0.45000000000000107
+    },
+    {
+      "name": "Easy596",
+      "raw_actions": 87,
+      "loop_free_actions": 48,
+      "raw_moves": 132,
+      "loop_free_moves": 78,
+      "raw_return": -0.7700000000000011,
+      "loop_free_return": 0.21999999999999953
+    },
+    {
+      "name": "Easy001",
+      "raw_actions": 32,
+      "loop_free_actions": 7,
+      "raw_moves": 54,
+      "loop_free_moves": 16,
+      "raw_return": 0.30999999999999983,
+      "loop_free_return": 0.84
+    },
+    {
+      "name": "Easy255",
+      "raw_actions": 194,
+      "loop_free_actions": 33,
+      "raw_moves": 254,
+      "loop_free_moves": 48,
+      "raw_return": -3.429999999999986,
+      "loop_free_return": 0.5199999999999998
+    },
+    {
+      "name": "Easy172",
+      "raw_actions": 127,
+      "loop_free_actions": 59,
+      "raw_moves": 169,
+      "loop_free_moves": 83,
+      "raw_return": -1.6499999999999966,
+      "loop_free_return": 0.16999999999999948
+    },
+    {
+      "name": "Easy139",
+      "raw_actions": 140,
+      "loop_free_actions": 76,
+      "raw_moves": 207,
+      "loop_free_moves": 105,
+      "raw_return": -1.8199999999999972,
+      "loop_free_return": -0.05000000000000071
+    },
+    {
+      "name": "Medium240",
+      "raw_actions": 194,
+      "loop_free_actions": 87,
+      "raw_moves": 304,
+      "loop_free_moves": 134,
+      "raw_return": -2.9099999999999913,
+      "loop_free_return": -0.34000000000000097
+    },
+    {
+      "name": "Easy032",
+      "raw_actions": 50,
+      "loop_free_actions": 38,
+      "raw_moves": 80,
+      "loop_free_moves": 64,
+      "raw_return": -0.0700000000000005,
+      "loop_free_return": 0.35999999999999965
+    },
+    {
+      "name": "Easy087",
+      "raw_actions": 107,
+      "loop_free_actions": 88,
+      "raw_moves": 177,
+      "loop_free_moves": 149,
+      "raw_return": -0.9800000000000013,
+      "loop_free_return": -0.4900000000000011
+    },
+    {
+      "name": "Easy544",
+      "raw_actions": 215,
+      "loop_free_actions": 62,
+      "raw_moves": 289,
+      "loop_free_moves": 89,
+      "raw_return": -3.5399999999999867,
+      "loop_free_return": 0.10999999999999943
+    },
+    {
+      "name": "Easy237",
+      "raw_actions": 201,
+      "loop_free_actions": 105,
+      "raw_moves": 307,
+      "loop_free_moves": 163,
+      "raw_return": -2.819999999999988,
+      "loop_free_return": -0.6300000000000012
+    },
+    {
+      "name": "Hard175",
+      "raw_actions": 247,
+      "loop_free_actions": 114,
+      "raw_moves": 338,
+      "loop_free_moves": 158,
+      "raw_return": -3.9999999999999822,
+      "loop_free_return": -0.5800000000000012
+    },
+    {
+      "name": "Easy234",
+      "raw_actions": 201,
+      "loop_free_actions": 72,
+      "raw_moves": 333,
+      "loop_free_moves": 109,
+      "raw_return": -4.099999999999992,
+      "loop_free_return": -0.09000000000000075
+    },
+    {
+      "name": "Easy201",
+      "raw_actions": 130,
+      "loop_free_actions": 57,
+      "raw_moves": 200,
+      "loop_free_moves": 90,
+      "raw_return": -1.7499999999999976,
+      "loop_free_return": 0.09999999999999942
+    },
+    {
+      "name": "Easy223",
+      "raw_actions": 131,
+      "loop_free_actions": 98,
+      "raw_moves": 197,
+      "loop_free_moves": 149,
+      "raw_return": -1.4499999999999997,
+      "loop_free_return": -0.4900000000000011
+    },
+    {
+      "name": "Easy322",
+      "raw_actions": 165,
+      "loop_free_actions": 84,
+      "raw_moves": 224,
+      "loop_free_moves": 120,
+      "raw_return": -1.869999999999996,
+      "loop_free_return": -0.20000000000000062
+    },
+    {
+      "name": "Easy067",
+      "raw_actions": 33,
+      "loop_free_actions": 27,
+      "raw_moves": 49,
+      "loop_free_moves": 41,
+      "raw_return": 0.3899999999999997,
+      "loop_free_return": 0.5899999999999999
+    },
+    {
+      "name": "Hard006",
+      "raw_actions": 300,
+      "loop_free_actions": 154,
+      "raw_moves": 398,
+      "loop_free_moves": 202,
+      "raw_return": -5.229999999999966,
+      "loop_free_return": -1.0200000000000016
+    },
+    {
+      "name": "Easy173",
+      "raw_actions": 165,
+      "loop_free_actions": 69,
+      "raw_moves": 241,
+      "loop_free_moves": 105,
+      "raw_return": -2.489999999999992,
+      "loop_free_return": -0.05000000000000071
+    },
+    {
+      "name": "Easy020",
+      "raw_actions": 210,
+      "loop_free_actions": 64,
+      "raw_moves": 290,
+      "loop_free_moves": 96,
+      "raw_return": -4.5699999999999825,
+      "loop_free_return": 0.03999999999999937
+    },
+    {
+      "name": "Easy070",
+      "raw_actions": 255,
+      "loop_free_actions": 74,
+      "raw_moves": 423,
+      "loop_free_moves": 117,
+      "raw_return": -4.099999999999978,
+      "loop_free_return": -0.17000000000000082
+    },
+    {
+      "name": "Easy279",
+      "raw_actions": 90,
+      "loop_free_actions": 64,
+      "raw_moves": 135,
+      "loop_free_moves": 97,
+      "raw_return": -0.6500000000000012,
+      "loop_free_return": 0.02999999999999936
+    },
+    {
+      "name": "Easy239",
+      "raw_actions": 191,
+      "loop_free_actions": 148,
+      "raw_moves": 278,
+      "loop_free_moves": 218,
+      "raw_return": -2.46999999999999,
+      "loop_free_return": -1.1800000000000008
+    },
+    {
+      "name": "Easy044",
+      "raw_actions": 163,
+      "loop_free_actions": 28,
+      "raw_moves": 224,
+      "loop_free_moves": 40,
+      "raw_return": -2.6799999999999957,
+      "loop_free_return": 0.5999999999999999
+    },
+    {
+      "name": "Easy412",
+      "raw_actions": 73,
+      "loop_free_actions": 41,
+      "raw_moves": 116,
+      "loop_free_moves": 66,
+      "raw_return": -0.7000000000000011,
+      "loop_free_return": 0.33999999999999964
+    },
+    {
+      "name": "Easy015",
+      "raw_actions": 85,
+      "loop_free_actions": 22,
+      "raw_moves": 129,
+      "loop_free_moves": 35,
+      "raw_return": -1.5200000000000002,
+      "loop_free_return": 0.6499999999999999
+    },
+    {
+      "name": "Easy092",
+      "raw_actions": 119,
+      "loop_free_actions": 50,
+      "raw_moves": 169,
+      "loop_free_moves": 69,
+      "raw_return": -1.3199999999999974,
+      "loop_free_return": 0.3099999999999996
+    },
+    {
+      "name": "Easy058",
+      "raw_actions": 90,
+      "loop_free_actions": 73,
+      "raw_moves": 126,
+      "loop_free_moves": 102,
+      "raw_return": -0.5000000000000011,
+      "loop_free_return": -0.020000000000000684
+    },
+    {
+      "name": "Easy040",
+      "raw_actions": 162,
+      "loop_free_actions": 109,
+      "raw_moves": 248,
+      "loop_free_moves": 176,
+      "raw_return": -2.1999999999999935,
+      "loop_free_return": -0.7600000000000013
+    },
+    {
+      "name": "Easy220",
+      "raw_actions": 221,
+      "loop_free_actions": 69,
+      "raw_moves": 287,
+      "loop_free_moves": 93,
+      "raw_return": -3.3099999999999854,
+      "loop_free_return": 0.0699999999999994
+    },
+    {
+      "name": "Easy198",
+      "raw_actions": 163,
+      "loop_free_actions": 53,
+      "raw_moves": 238,
+      "loop_free_moves": 74,
+      "raw_return": -2.159999999999994,
+      "loop_free_return": 0.25999999999999956
+    },
+    {
+      "name": "Easy373",
+      "raw_actions": 171,
+      "loop_free_actions": 48,
+      "raw_moves": 252,
+      "loop_free_moves": 74,
+      "raw_return": -2.509999999999992,
+      "loop_free_return": 0.2599999999999997
+    },
+    {
+      "name": "Easy111",
+      "raw_actions": 292,
+      "loop_free_actions": 41,
+      "raw_moves": 402,
+      "loop_free_moves": 64,
+      "raw_return": -7.489999999999977,
+      "loop_free_return": 0.35999999999999976
+    },
+    {
+      "name": "Medium113",
+      "raw_actions": 288,
+      "loop_free_actions": 50,
+      "raw_moves": 426,
+      "loop_free_moves": 76,
+      "raw_return": -7.249999999999969,
+      "loop_free_return": 0.23999999999999955
+    },
+    {
+      "name": "Medium288",
+      "raw_actions": 241,
+      "loop_free_actions": 40,
+      "raw_moves": 348,
+      "loop_free_moves": 62,
+      "raw_return": -3.679999999999985,
+      "loop_free_return": 0.37999999999999967
+    },
+    {
+      "name": "Easy266",
+      "raw_actions": 259,
+      "loop_free_actions": 119,
+      "raw_moves": 396,
+      "loop_free_moves": 184,
+      "raw_return": -4.069999999999976,
+      "loop_free_return": -0.8400000000000014
+    },
+    {
+      "name": "Easy056",
+      "raw_actions": 251,
+      "loop_free_actions": 51,
+      "raw_moves": 335,
+      "loop_free_moves": 81,
+      "raw_return": -6.099999999999981,
+      "loop_free_return": 0.1899999999999995
+    },
+    {
+      "name": "Easy421",
+      "raw_actions": 299,
+      "loop_free_actions": 84,
+      "raw_moves": 452,
+      "loop_free_moves": 128,
+      "raw_return": -5.769999999999968,
+      "loop_free_return": -0.2800000000000009
+    },
+    {
+      "name": "Easy174",
+      "raw_actions": 49,
+      "loop_free_actions": 40,
+      "raw_moves": 69,
+      "loop_free_moves": 57,
+      "raw_return": 0.1599999999999996,
+      "loop_free_return": 0.4299999999999998
+    },
+    {
+      "name": "Medium209",
+      "raw_actions": 261,
+      "loop_free_actions": 71,
+      "raw_moves": 355,
+      "loop_free_moves": 105,
+      "raw_return": -4.979999999999982,
+      "loop_free_return": -0.05000000000000071
+    },
+    {
+      "name": "Easy098",
+      "raw_actions": 259,
+      "loop_free_actions": 57,
+      "raw_moves": 350,
+      "loop_free_moves": 78,
+      "raw_return": -4.3299999999999805,
+      "loop_free_return": 0.21999999999999953
+    },
+    {
+      "name": "Medium008",
+      "raw_actions": 294,
+      "loop_free_actions": 177,
+      "raw_moves": 417,
+      "loop_free_moves": 249,
+      "raw_return": -4.519999999999969,
+      "loop_free_return": -1.4899999999999982
+    },
+    {
+      "name": "Easy012",
+      "raw_actions": 214,
+      "loop_free_actions": 100,
+      "raw_moves": 298,
+      "loop_free_moves": 144,
+      "raw_return": -3.5399999999999863,
+      "loop_free_return": -0.44000000000000083
+    },
+    {
+      "name": "Easy062",
+      "raw_actions": 280,
+      "loop_free_actions": 68,
+      "raw_moves": 452,
+      "loop_free_moves": 122,
+      "raw_return": -4.509999999999979,
+      "loop_free_return": -0.22000000000000086
+    },
+    {
+      "name": "Easy129",
+      "raw_actions": 94,
+      "loop_free_actions": 62,
+      "raw_moves": 144,
+      "loop_free_moves": 92,
+      "raw_return": -0.8000000000000012,
+      "loop_free_return": 0.07999999999999952
+    },
+    {
+      "name": "Easy349",
+      "raw_actions": 219,
+      "loop_free_actions": 91,
+      "raw_moves": 279,
+      "loop_free_moves": 115,
+      "raw_return": -3.1999999999999877,
+      "loop_free_return": -0.1500000000000008
+    },
+    {
+      "name": "Medium515",
+      "raw_actions": 286,
+      "loop_free_actions": 81,
+      "raw_moves": 420,
+      "loop_free_moves": 122,
+      "raw_return": -5.029999999999973,
+      "loop_free_return": -0.22000000000000086
+    },
+    {
+      "name": "Easy515",
+      "raw_actions": 243,
+      "loop_free_actions": 32,
+      "raw_moves": 361,
+      "loop_free_moves": 53,
+      "raw_return": -5.189999999999978,
+      "loop_free_return": 0.46999999999999975
+    },
+    {
+      "name": "Easy157",
+      "raw_actions": 49,
+      "loop_free_actions": 41,
+      "raw_moves": 83,
+      "loop_free_moves": 71,
+      "raw_return": -0.010000000000000564,
+      "loop_free_return": 0.2899999999999997
+    },
+    {
+      "name": "Easy007",
+      "raw_actions": 61,
+      "loop_free_actions": 42,
+      "raw_moves": 95,
+      "loop_free_moves": 73,
+      "raw_return": -0.1900000000000006,
+      "loop_free_return": 0.2699999999999996
+    },
+    {
+      "name": "Easy072",
+      "raw_actions": 239,
+      "loop_free_actions": 63,
+      "raw_moves": 367,
+      "loop_free_moves": 111,
+      "raw_return": -4.319999999999979,
+      "loop_free_return": -0.11000000000000054
+    },
+    {
+      "name": "Easy478",
+      "raw_actions": 206,
+      "loop_free_actions": 56,
+      "raw_moves": 251,
+      "loop_free_moves": 71,
+      "raw_return": -3.129999999999986,
+      "loop_free_return": 0.2899999999999997
+    },
+    {
+      "name": "Easy509",
+      "raw_actions": 127,
+      "loop_free_actions": 101,
+      "raw_moves": 195,
+      "loop_free_moves": 151,
+      "raw_return": -1.279999999999999,
+      "loop_free_return": -0.5100000000000011
+    },
+    {
+      "name": "Medium610",
+      "raw_actions": 278,
+      "loop_free_actions": 128,
+      "raw_moves": 406,
+      "loop_free_moves": 192,
+      "raw_return": -4.529999999999979,
+      "loop_free_return": -0.9200000000000015
+    },
+    {
+      "name": "Easy282",
+      "raw_actions": 196,
+      "loop_free_actions": 108,
+      "raw_moves": 302,
+      "loop_free_moves": 168,
+      "raw_return": -2.9199999999999866,
+      "loop_free_return": -0.6800000000000013
+    },
+    {
+      "name": "Easy369",
+      "raw_actions": 216,
+      "loop_free_actions": 63,
+      "raw_moves": 285,
+      "loop_free_moves": 97,
+      "raw_return": -4.099999999999982,
+      "loop_free_return": 0.02999999999999936
+    },
+    {
+      "name": "Easy309",
+      "raw_actions": 37,
+      "loop_free_actions": 25,
+      "raw_moves": 57,
+      "loop_free_moves": 43,
+      "raw_return": 0.24999999999999978,
+      "loop_free_return": 0.5699999999999998
+    },
+    {
+      "name": "Medium356",
+      "raw_actions": 138,
+      "loop_free_actions": 61,
+      "raw_moves": 194,
+      "loop_free_moves": 84,
+      "raw_return": -2.2899999999999956,
+      "loop_free_return": 0.15999999999999948
+    },
+    {
+      "name": "Easy612",
+      "raw_actions": 212,
+      "loop_free_actions": 61,
+      "raw_moves": 346,
+      "loop_free_moves": 104,
+      "raw_return": -3.6599999999999877,
+      "loop_free_return": -0.0400000000000007
+    },
+    {
+      "name": "Easy370",
+      "raw_actions": 98,
+      "loop_free_actions": 36,
+      "raw_moves": 138,
+      "loop_free_moves": 52,
+      "raw_return": -0.7700000000000011,
+      "loop_free_return": 0.47999999999999976
+    },
+    {
+      "name": "Easy192",
+      "raw_actions": 37,
+      "loop_free_actions": 31,
+      "raw_moves": 55,
+      "loop_free_moves": 47,
+      "raw_return": 0.35999999999999965,
+      "loop_free_return": 0.5299999999999998
+    },
+    {
+      "name": "Easy025",
+      "raw_actions": 111,
+      "loop_free_actions": 34,
+      "raw_moves": 149,
+      "loop_free_moves": 47,
+      "raw_return": -1.180000000000001,
+      "loop_free_return": 0.5299999999999998
+    },
+    {
+      "name": "Easy008",
+      "raw_actions": 154,
+      "loop_free_actions": 78,
+      "raw_moves": 222,
+      "loop_free_moves": 112,
+      "raw_return": -2.029999999999996,
+      "loop_free_return": -0.12000000000000077
+    },
+    {
+      "name": "Easy298",
+      "raw_actions": 213,
+      "loop_free_actions": 46,
+      "raw_moves": 307,
+      "loop_free_moves": 73,
+      "raw_return": -3.599999999999986,
+      "loop_free_return": 0.2699999999999996
+    },
+    {
+      "name": "Easy016",
+      "raw_actions": 206,
+      "loop_free_actions": 38,
+      "raw_moves": 318,
+      "loop_free_moves": 62,
+      "raw_return": -4.639999999999985,
+      "loop_free_return": 0.3799999999999998
+    },
+    {
+      "name": "Easy375",
+      "raw_actions": 224,
+      "loop_free_actions": 57,
+      "raw_moves": 309,
+      "loop_free_moves": 83,
+      "raw_return": -4.159999999999977,
+      "loop_free_return": 0.16999999999999948
+    },
+    {
+      "name": "Easy004",
+      "raw_actions": 46,
+      "loop_free_actions": 16,
+      "raw_moves": 73,
+      "loop_free_moves": 27,
+      "raw_return": -5.551115123125783e-16,
+      "loop_free_return": 0.73
+    },
+    {
+      "name": "Easy257",
+      "raw_actions": 267,
+      "loop_free_actions": 76,
+      "raw_moves": 391,
+      "loop_free_moves": 111,
+      "raw_return": -4.409999999999971,
+      "loop_free_return": -0.11000000000000054
+    },
+    {
+      "name": "Easy203",
+      "raw_actions": 147,
+      "loop_free_actions": 74,
+      "raw_moves": 238,
+      "loop_free_moves": 124,
+      "raw_return": -2.279999999999996,
+      "loop_free_return": -0.24000000000000088
+    },
+    {
+      "name": "Medium330",
+      "raw_actions": 211,
+      "loop_free_actions": 108,
+      "raw_moves": 360,
+      "loop_free_moves": 194,
+      "raw_return": -3.6199999999999815,
+      "loop_free_return": -0.9400000000000013
+    },
+    {
+      "name": "Medium358",
+      "raw_actions": 271,
+      "loop_free_actions": 79,
+      "raw_moves": 353,
+      "loop_free_moves": 117,
+      "raw_return": -4.3899999999999775,
+      "loop_free_return": -0.17000000000000082
+    },
+    {
+      "name": "Medium107",
+      "raw_actions": 236,
+      "loop_free_actions": 89,
+      "raw_moves": 357,
+      "loop_free_moves": 137,
+      "raw_return": -4.429999999999978,
+      "loop_free_return": -0.370000000000001
+    },
+    {
+      "name": "Easy328",
+      "raw_actions": 132,
+      "loop_free_actions": 87,
+      "raw_moves": 180,
+      "loop_free_moves": 124,
+      "raw_return": -1.2200000000000006,
+      "loop_free_return": -0.24000000000000088
+    },
+    {
+      "name": "Easy080",
+      "raw_actions": 153,
+      "loop_free_actions": 75,
+      "raw_moves": 267,
+      "loop_free_moves": 137,
+      "raw_return": -2.2999999999999945,
+      "loop_free_return": -0.370000000000001
+    },
+    {
+      "name": "Easy194",
+      "raw_actions": 221,
+      "loop_free_actions": 61,
+      "raw_moves": 286,
+      "loop_free_moves": 80,
+      "raw_return": -4.139999999999986,
+      "loop_free_return": 0.19999999999999962
+    },
+    {
+      "name": "Easy065",
+      "raw_actions": 265,
+      "loop_free_actions": 20,
+      "raw_moves": 435,
+      "loop_free_moves": 45,
+      "raw_return": -8.239999999999984,
+      "loop_free_return": 0.5499999999999998
+    },
+    {
+      "name": "Easy386",
+      "raw_actions": 83,
+      "loop_free_actions": 63,
+      "raw_moves": 121,
+      "loop_free_moves": 91,
+      "raw_return": -0.5100000000000009,
+      "loop_free_return": 0.08999999999999952
+    },
+    {
+      "name": "Easy200",
+      "raw_actions": 182,
+      "loop_free_actions": 48,
+      "raw_moves": 250,
+      "loop_free_moves": 68,
+      "raw_return": -2.8499999999999934,
+      "loop_free_return": 0.3199999999999996
+    },
+    {
+      "name": "Easy270",
+      "raw_actions": 80,
+      "loop_free_actions": 62,
+      "raw_moves": 108,
+      "loop_free_moves": 88,
+      "raw_return": -0.32000000000000073,
+      "loop_free_return": 0.11999999999999944
+    },
+    {
+      "name": "Easy121",
+      "raw_actions": 75,
+      "loop_free_actions": 45,
+      "raw_moves": 98,
+      "loop_free_moves": 58,
+      "raw_return": -0.4900000000000009,
+      "loop_free_return": 0.4199999999999997
+    },
+    {
+      "name": "Easy116",
+      "raw_actions": 33,
+      "loop_free_actions": 31,
+      "raw_moves": 59,
+      "loop_free_moves": 57,
+      "raw_return": 0.37999999999999967,
+      "loop_free_return": 0.4299999999999997
+    },
+    {
+      "name": "Medium190",
+      "raw_actions": 195,
+      "loop_free_actions": 111,
+      "raw_moves": 305,
+      "loop_free_moves": 173,
+      "raw_return": -2.9199999999999897,
+      "loop_free_return": -0.7300000000000011
+    },
+    {
+      "name": "Medium134",
+      "raw_actions": 166,
+      "loop_free_actions": 55,
+      "raw_moves": 235,
+      "loop_free_moves": 83,
+      "raw_return": -2.6399999999999917,
+      "loop_free_return": 0.1699999999999996
+    },
+    {
+      "name": "Easy273",
+      "raw_actions": 138,
+      "loop_free_actions": 24,
+      "raw_moves": 216,
+      "loop_free_moves": 34,
+      "raw_return": -2.7799999999999976,
+      "loop_free_return": 0.6599999999999999
+    },
+    {
+      "name": "Medium025",
+      "raw_actions": 175,
+      "loop_free_actions": 112,
+      "raw_moves": 253,
+      "loop_free_moves": 153,
+      "raw_return": -2.1899999999999924,
+      "loop_free_return": -0.5300000000000011
+    },
+    {
+      "name": "Easy414",
+      "raw_actions": 200,
+      "loop_free_actions": 86,
+      "raw_moves": 264,
+      "loop_free_moves": 132,
+      "raw_return": -3.0199999999999916,
+      "loop_free_return": -0.32000000000000095
+    },
+    {
+      "name": "Easy075",
+      "raw_actions": 105,
+      "loop_free_actions": 33,
+      "raw_moves": 149,
+      "loop_free_moves": 47,
+      "raw_return": -1.150000000000001,
+      "loop_free_return": 0.5299999999999998
+    },
+    {
+      "name": "Medium471",
+      "raw_actions": 180,
+      "loop_free_actions": 61,
+      "raw_moves": 271,
+      "loop_free_moves": 85,
+      "raw_return": -3.0599999999999907,
+      "loop_free_return": 0.14999999999999947
+    },
+    {
+      "name": "Easy105",
+      "raw_actions": 269,
+      "loop_free_actions": 142,
+      "raw_moves": 409,
+      "loop_free_moves": 215,
+      "raw_return": -4.139999999999975,
+      "loop_free_return": -1.150000000000001
+    },
+    {
+      "name": "Easy023",
+      "raw_actions": 59,
+      "loop_free_actions": 59,
+      "raw_moves": 84,
+      "loop_free_moves": 84,
+      "raw_return": 0.15999999999999948,
+      "loop_free_return": 0.15999999999999948
+    },
+    {
+      "name": "Easy418",
+      "raw_actions": 201,
+      "loop_free_actions": 68,
+      "raw_moves": 299,
+      "loop_free_moves": 109,
+      "raw_return": -3.189999999999989,
+      "loop_free_return": -0.09000000000000052
+    },
+    {
+      "name": "Easy057",
+      "raw_actions": 259,
+      "loop_free_actions": 155,
+      "raw_moves": 408,
+      "loop_free_moves": 250,
+      "raw_return": -4.1299999999999795,
+      "loop_free_return": -1.4999999999999964
+    },
+    {
+      "name": "Easy115",
+      "raw_actions": 215,
+      "loop_free_actions": 25,
+      "raw_moves": 270,
+      "loop_free_moves": 36,
+      "raw_return": -4.939999999999991,
+      "loop_free_return": 0.6399999999999999
+    },
+    {
+      "name": "Easy189",
+      "raw_actions": 135,
+      "loop_free_actions": 91,
+      "raw_moves": 197,
+      "loop_free_moves": 135,
+      "raw_return": -1.7199999999999955,
+      "loop_free_return": -0.350000000000001
+    },
+    {
+      "name": "Hard335",
+      "raw_actions": 179,
+      "loop_free_actions": 58,
+      "raw_moves": 221,
+      "loop_free_moves": 69,
+      "raw_return": -3.3099999999999916,
+      "loop_free_return": 0.3099999999999996
+    },
+    {
+      "name": "Easy086",
+      "raw_actions": 96,
+      "loop_free_actions": 71,
+      "raw_moves": 152,
+      "loop_free_moves": 116,
+      "raw_return": -0.8200000000000012,
+      "loop_free_return": -0.1600000000000008
+    },
+    {
+      "name": "Medium365",
+      "raw_actions": 265,
+      "loop_free_actions": 80,
+      "raw_moves": 329,
+      "loop_free_moves": 97,
+      "raw_return": -4.629999999999974,
+      "loop_free_return": 0.02999999999999936
+    },
+    {
+      "name": "Easy606",
+      "raw_actions": 288,
+      "loop_free_actions": 102,
+      "raw_moves": 401,
+      "loop_free_moves": 147,
+      "raw_return": -4.359999999999972,
+      "loop_free_return": -0.4700000000000011
+    },
+    {
+      "name": "Easy060",
+      "raw_actions": 128,
+      "loop_free_actions": 23,
+      "raw_moves": 175,
+      "loop_free_moves": 33,
+      "raw_return": -2.3999999999999977,
+      "loop_free_return": 0.6699999999999999
+    },
+    {
+      "name": "Easy376",
+      "raw_actions": 77,
+      "loop_free_actions": 45,
+      "raw_moves": 121,
+      "loop_free_moves": 73,
+      "raw_return": -0.6000000000000008,
+      "loop_free_return": 0.2699999999999996
+    },
+    {
+      "name": "Easy598",
+      "raw_actions": 273,
+      "loop_free_actions": 122,
+      "raw_moves": 401,
+      "loop_free_moves": 177,
+      "raw_return": -4.089999999999972,
+      "loop_free_return": -0.7700000000000014
+    },
+    {
+      "name": "Hard300",
+      "raw_actions": 275,
+      "loop_free_actions": 159,
+      "raw_moves": 352,
+      "loop_free_moves": 206,
+      "raw_return": -3.8399999999999697,
+      "loop_free_return": -1.0600000000000012
+    },
+    {
+      "name": "Easy038",
+      "raw_actions": 204,
+      "loop_free_actions": 50,
+      "raw_moves": 325,
+      "loop_free_moves": 79,
+      "raw_return": -2.7899999999999916,
+      "loop_free_return": 0.20999999999999963
+    },
+    {
+      "name": "Medium391",
+      "raw_actions": 228,
+      "loop_free_actions": 102,
+      "raw_moves": 358,
+      "loop_free_moves": 172,
+      "raw_return": -4.079999999999987,
+      "loop_free_return": -0.7200000000000011
+    },
+    {
+      "name": "Easy352",
+      "raw_actions": 292,
+      "loop_free_actions": 69,
+      "raw_moves": 437,
+      "loop_free_moves": 119,
+      "raw_return": -5.289999999999969,
+      "loop_free_return": -0.19000000000000083
+    },
+    {
+      "name": "Medium163",
+      "raw_actions": 250,
+      "loop_free_actions": 107,
+      "raw_moves": 344,
+      "loop_free_moves": 138,
+      "raw_return": -4.059999999999976,
+      "loop_free_return": -0.3800000000000008
+    },
+    {
+      "name": "Easy146",
+      "raw_actions": 104,
+      "loop_free_actions": 31,
+      "raw_moves": 124,
+      "loop_free_moves": 44,
+      "raw_return": -2.009999999999997,
+      "loop_free_return": 0.5599999999999998
+    },
+    {
+      "name": "Easy489",
+      "raw_actions": 277,
+      "loop_free_actions": 80,
+      "raw_moves": 405,
+      "loop_free_moves": 115,
+      "raw_return": -4.159999999999974,
+      "loop_free_return": -0.1500000000000008
+    },
+    {
+      "name": "Easy161",
+      "raw_actions": 292,
+      "loop_free_actions": 65,
+      "raw_moves": 397,
+      "loop_free_moves": 91,
+      "raw_return": -4.469999999999975,
+      "loop_free_return": 0.08999999999999941
+    },
+    {
+      "name": "Easy059",
+      "raw_actions": 260,
+      "loop_free_actions": 143,
+      "raw_moves": 368,
+      "loop_free_moves": 200,
+      "raw_return": -4.38999999999997,
+      "loop_free_return": -1.0000000000000016
+    },
+    {
+      "name": "Easy463",
+      "raw_actions": 204,
+      "loop_free_actions": 53,
+      "raw_moves": 279,
+      "loop_free_moves": 77,
+      "raw_return": -3.679999999999989,
+      "loop_free_return": 0.22999999999999954
+    },
+    {
+      "name": "Easy262",
+      "raw_actions": 82,
+      "loop_free_actions": 56,
+      "raw_moves": 125,
+      "loop_free_moves": 89,
+      "raw_return": -0.5500000000000009,
+      "loop_free_return": 0.10999999999999943
+    },
+    {
+      "name": "Easy399",
+      "raw_actions": 61,
+      "loop_free_actions": 48,
+      "raw_moves": 103,
+      "loop_free_moves": 85,
+      "raw_return": -0.18000000000000071,
+      "loop_free_return": 0.14999999999999958
+    },
+    {
+      "name": "Easy191",
+      "raw_actions": 102,
+      "loop_free_actions": 75,
+      "raw_moves": 129,
+      "loop_free_moves": 95,
+      "raw_return": -0.590000000000001,
+      "loop_free_return": 0.04999999999999938
+    },
+    {
+      "name": "Easy504",
+      "raw_actions": 209,
+      "loop_free_actions": 62,
+      "raw_moves": 324,
+      "loop_free_moves": 100,
+      "raw_return": -3.5899999999999888,
+      "loop_free_return": -6.661338147750939e-16
+    },
+    {
+      "name": "Easy424",
+      "raw_actions": 30,
+      "loop_free_actions": 23,
+      "raw_moves": 49,
+      "loop_free_moves": 35,
+      "raw_return": 0.41999999999999993,
+      "loop_free_return": 0.6499999999999999
+    },
+    {
+      "name": "Easy119",
+      "raw_actions": 40,
+      "loop_free_actions": 23,
+      "raw_moves": 61,
+      "loop_free_moves": 41,
+      "raw_return": 0.2999999999999997,
+      "loop_free_return": 0.5899999999999999
+    },
+    {
+      "name": "Easy055",
+      "raw_actions": 197,
+      "loop_free_actions": 104,
+      "raw_moves": 293,
+      "loop_free_moves": 151,
+      "raw_return": -2.7399999999999887,
+      "loop_free_return": -0.5100000000000009
+    },
+    {
+      "name": "Easy321",
+      "raw_actions": 249,
+      "loop_free_actions": 32,
+      "raw_moves": 339,
+      "loop_free_moves": 49,
+      "raw_return": -4.129999999999978,
+      "loop_free_return": 0.5099999999999998
+    },
+    {
+      "name": "Easy415",
+      "raw_actions": 163,
+      "loop_free_actions": 109,
+      "raw_moves": 278,
+      "loop_free_moves": 184,
+      "raw_return": -2.4099999999999926,
+      "loop_free_return": -0.8400000000000014
+    },
+    {
+      "name": "Easy486",
+      "raw_actions": 169,
+      "loop_free_actions": 83,
+      "raw_moves": 292,
+      "loop_free_moves": 142,
+      "raw_return": -2.7599999999999922,
+      "loop_free_return": -0.42000000000000104
+    },
+    {
+      "name": "Easy457",
+      "raw_actions": 115,
+      "loop_free_actions": 67,
+      "raw_moves": 170,
+      "loop_free_moves": 106,
+      "raw_return": -1.3299999999999994,
+      "loop_free_return": -0.06000000000000072
+    },
+    {
+      "name": "Easy248",
+      "raw_actions": 240,
+      "loop_free_actions": 74,
+      "raw_moves": 341,
+      "loop_free_moves": 105,
+      "raw_return": -3.399999999999979,
+      "loop_free_return": -0.05000000000000071
+    },
+    {
+      "name": "Easy090",
+      "raw_actions": 274,
+      "loop_free_actions": 117,
+      "raw_moves": 389,
+      "loop_free_moves": 177,
+      "raw_return": -5.619999999999968,
+      "loop_free_return": -0.7700000000000011
+    },
+    {
+      "name": "Medium037",
+      "raw_actions": 167,
+      "loop_free_actions": 51,
+      "raw_moves": 231,
+      "loop_free_moves": 77,
+      "raw_return": -2.659999999999995,
+      "loop_free_return": 0.22999999999999954
+    },
+    {
+      "name": "Easy495",
+      "raw_actions": 251,
+      "loop_free_actions": 129,
+      "raw_moves": 355,
+      "loop_free_moves": 185,
+      "raw_return": -4.049999999999981,
+      "loop_free_return": -0.8500000000000014
+    },
+    {
+      "name": "Easy392",
+      "raw_actions": 119,
+      "loop_free_actions": 65,
+      "raw_moves": 180,
+      "loop_free_moves": 102,
+      "raw_return": -1.3699999999999983,
+      "loop_free_return": -0.020000000000000573
+    },
+    {
+      "name": "Easy014",
+      "raw_actions": 276,
+      "loop_free_actions": 125,
+      "raw_moves": 413,
+      "loop_free_moves": 183,
+      "raw_return": -4.779999999999973,
+      "loop_free_return": -0.8300000000000014
+    },
+    {
+      "name": "Easy162",
+      "raw_actions": 154,
+      "loop_free_actions": 104,
+      "raw_moves": 245,
+      "loop_free_moves": 171,
+      "raw_return": -1.9299999999999946,
+      "loop_free_return": -0.7100000000000013
+    },
+    {
+      "name": "Medium557",
+      "raw_actions": 293,
+      "loop_free_actions": 104,
+      "raw_moves": 435,
+      "loop_free_moves": 157,
+      "raw_return": -5.839999999999975,
+      "loop_free_return": -0.5700000000000012
+    },
+    {
+      "name": "Easy324",
+      "raw_actions": 282,
+      "loop_free_actions": 34,
+      "raw_moves": 413,
+      "loop_free_moves": 55,
+      "raw_return": -7.629999999999981,
+      "loop_free_return": 0.44999999999999973
+    },
+    {
+      "name": "Easy094",
+      "raw_actions": 81,
+      "loop_free_actions": 50,
+      "raw_moves": 131,
+      "loop_free_moves": 85,
+      "raw_return": -0.5200000000000008,
+      "loop_free_return": 0.1499999999999997
+    },
+    {
+      "name": "Medium398",
+      "raw_actions": 229,
+      "loop_free_actions": 92,
+      "raw_moves": 366,
+      "loop_free_moves": 142,
+      "raw_return": -3.7099999999999853,
+      "loop_free_return": -0.4200000000000008
+    },
+    {
+      "name": "Easy082",
+      "raw_actions": 176,
+      "loop_free_actions": 50,
+      "raw_moves": 280,
+      "loop_free_moves": 86,
+      "raw_return": -2.8199999999999896,
+      "loop_free_return": 0.13999999999999946
+    },
+    {
+      "name": "Easy526",
+      "raw_actions": 253,
+      "loop_free_actions": 148,
+      "raw_moves": 385,
+      "loop_free_moves": 225,
+      "raw_return": -3.959999999999984,
+      "loop_free_return": -1.25
+    },
+    {
+      "name": "Easy006",
+      "raw_actions": 111,
+      "loop_free_actions": 44,
+      "raw_moves": 180,
+      "loop_free_moves": 82,
+      "raw_return": -1.6999999999999988,
+      "loop_free_return": 0.1799999999999995
+    },
+    {
+      "name": "Expert161",
+      "raw_actions": 230,
+      "loop_free_actions": 81,
+      "raw_moves": 273,
+      "loop_free_moves": 93,
+      "raw_return": -3.799999999999983,
+      "loop_free_return": 0.0699999999999994
+    },
+    {
+      "name": "Easy064",
+      "raw_actions": 223,
+      "loop_free_actions": 51,
+      "raw_moves": 337,
+      "loop_free_moves": 77,
+      "raw_return": -4.259999999999977,
+      "loop_free_return": 0.22999999999999965
+    },
+    {
+      "name": "Easy280",
+      "raw_actions": 291,
+      "loop_free_actions": 62,
+      "raw_moves": 427,
+      "loop_free_moves": 99,
+      "raw_return": -6.869999999999978,
+      "loop_free_return": 0.009999999999999343
+    },
+    {
+      "name": "Easy278",
+      "raw_actions": 210,
+      "loop_free_actions": 89,
+      "raw_moves": 279,
+      "loop_free_moves": 125,
+      "raw_return": -2.9899999999999833,
+      "loop_free_return": -0.2500000000000009
+    },
+    {
+      "name": "Easy066",
+      "raw_actions": 95,
+      "loop_free_actions": 20,
+      "raw_moves": 127,
+      "loop_free_moves": 29,
+      "raw_return": -1.2000000000000006,
+      "loop_free_return": 0.71
+    },
+    {
+      "name": "Easy050",
+      "raw_actions": 261,
+      "loop_free_actions": 42,
+      "raw_moves": 373,
+      "loop_free_moves": 69,
+      "raw_return": -5.219999999999973,
+      "loop_free_return": 0.3099999999999997
+    },
+    {
+      "name": "Easy535",
+      "raw_actions": 85,
+      "loop_free_actions": 42,
+      "raw_moves": 105,
+      "loop_free_moves": 57,
+      "raw_return": -0.5000000000000009,
+      "loop_free_return": 0.4299999999999997
+    },
+    {
+      "name": "Easy043",
+      "raw_actions": 23,
+      "loop_free_actions": 21,
+      "raw_moves": 31,
+      "loop_free_moves": 29,
+      "raw_return": 0.6599999999999999,
+      "loop_free_return": 0.71
+    },
+    {
+      "name": "Medium457",
+      "raw_actions": 195,
+      "loop_free_actions": 83,
+      "raw_moves": 325,
+      "loop_free_moves": 147,
+      "raw_return": -3.2399999999999887,
+      "loop_free_return": -0.4700000000000011
+    },
+    {
+      "name": "Easy536",
+      "raw_actions": 114,
+      "loop_free_actions": 27,
+      "raw_moves": 145,
+      "loop_free_moves": 43,
+      "raw_return": -1.7099999999999982,
+      "loop_free_return": 0.5699999999999998
+    },
+    {
+      "name": "Easy315",
+      "raw_actions": 83,
+      "loop_free_actions": 52,
+      "raw_moves": 136,
+      "loop_free_moves": 80,
+      "raw_return": -0.600000000000001,
+      "loop_free_return": 0.1999999999999995
+    },
+    {
+      "name": "Easy042",
+      "raw_actions": 173,
+      "loop_free_actions": 107,
+      "raw_moves": 252,
+      "loop_free_moves": 158,
+      "raw_return": -2.0599999999999925,
+      "loop_free_return": -0.5800000000000012
+    },
+    {
+      "name": "Medium082",
+      "raw_actions": 257,
+      "loop_free_actions": 76,
+      "raw_moves": 346,
+      "loop_free_moves": 104,
+      "raw_return": -4.5299999999999745,
+      "loop_free_return": -0.0400000000000007
+    }
+  ]
+}

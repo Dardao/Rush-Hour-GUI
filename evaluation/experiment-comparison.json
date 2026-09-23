@@ -1,0 +1,72 @@
+[
+  {
+    "condition": "기존 v0.3.3",
+    "total": 2500,
+    "solved": 2500,
+    "minimum_match": 311,
+    "below_reference": 0,
+    "mean_solved_moves": 46.806,
+    "mean_minimum": 37.5976,
+    "efficiency": 0.8354616629922043
+  },
+  {
+    "condition": "할인 방식만 변경 · 20 epoch",
+    "total": 2500,
+    "solved": 2500,
+    "minimum_match": 311,
+    "below_reference": 0,
+    "mean_solved_moves": 46.806,
+    "mean_minimum": 37.5976,
+    "efficiency": 0.8354616629922043
+  },
+  {
+    "condition": "행동 단위 할인 · 추가 경험 · 60 epoch",
+    "total": 2500,
+    "solved": 796,
+    "minimum_match": 531,
+    "below_reference": 0,
+    "mean_solved_moves": 29.84673366834171,
+    "mean_minimum": 37.5976,
+    "efficiency": 0.30839391887155504
+  },
+  {
+    "condition": "칸 단위 할인 · 추가 경험 · 60 epoch",
+    "total": 2500,
+    "solved": 804,
+    "minimum_match": 547,
+    "below_reference": 0,
+    "mean_solved_moves": 29.95273631840796,
+    "mean_minimum": 37.5976,
+    "efficiency": 0.3109095112787325
+  },
+  {
+    "condition": "학습률 조정 + 100k 탐험",
+    "total": 2500,
+    "solved": 2500,
+    "minimum_match": 1714,
+    "below_reference": 0,
+    "mean_solved_moves": 38.5176,
+    "mean_minimum": 37.5976,
+    "efficiency": 0.9785494432737669
+  },
+  {
+    "condition": "1m 탐험 경험 추가",
+    "total": 2500,
+    "solved": 2500,
+    "minimum_match": 2484,
+    "below_reference": 0,
+    "mean_solved_moves": 37.6064,
+    "mean_minimum": 37.5976,
+    "efficiency": 0.9997716512826847
+  },
+  {
+    "condition": "최종 추가 탐험·학습",
+    "total": 2500,
+    "solved": 2500,
+    "minimum_match": 2500,
+    "below_reference": 0,
+    "mean_solved_moves": 37.5976,
+    "mean_minimum": 37.5976,
+    "efficiency": 1.0
+  }
+]

@@ -1,15 +1,38 @@
 import unittest
+from unittest.mock import patch
 import numpy as np
 from rushhour.core import Puzzle, Vehicle, permute_vehicles, split_all
 from rushhour.model import Network
 from rushhour.rl import episodes, replay_successes, replay_rewards
-from rushhour.training import curriculum_pool, canonical_frame, SuccessReplay
+from rushhour.training import curriculum_pool, canonical_frame, SuccessReplay, easy_four, diagnostic_split
 
 
 class TrainingTests(unittest.TestCase):
     def fixture(self, name='p', minimum=20):
         return Puzzle(name, 0, (Vehicle('x', True, 2, 2), Vehicle('a', False, 2, 3),
                       Vehicle('b', True, 2, 5)), (0, 1, 0), minimum_possible=minimum)
+
+    def test_easy_four_exact_scope(self):
+        puzzles = [self.fixture(f'Easy{i:03d}', 28) for i in range(1, 6)]
+        self.assertEqual(easy_four(list(reversed(puzzles))), puzzles[:4])
+        with self.assertRaises(ValueError):
+            easy_four(puzzles[1:])
+
+    def test_diagnostic_rejects_incomplete_larger_cohort(self):
+        with self.assertRaises(ValueError):
+            diagnostic_split([self.fixture('Easy001')], 20)
+        with self.assertRaises(ValueError):
+            diagnostic_split([], 5)
+
+    def test_fixed_replay_never_permutes_and_still_learns(self):
+        p = self.fixture()
+        net = Network()
+        before = [w.copy() for w in net.w]
+        with patch('rushhour.rl.permute_vehicles', side_effect=AssertionError('Unexpected permutation')):
+            losses, used, steps = replay_successes(net, [(p, (16,))], np.random.default_rng(42), augment=False)
+        self.assertEqual((used, steps), (1, 1))
+        self.assertTrue(losses)
+        self.assertTrue(any(np.any(a != b) for a, b in zip(before, net.w)))
 
     def test_curriculum_cumulative(self):
         puzzles = [self.fixture(str(n), n) for n in (13, 25, 26, 35, 36, 45, 46, 93)]

@@ -1,0 +1,11 @@
+{
+  "training_calls": 4,
+  "teacher_load_blocked": true,
+  "answer_metadata_removed": true,
+  "false_minima_and_paths_do_not_change_weights_or_best_selection": true,
+  "frozen_evaluation": true,
+  "action_source_frames": {
+    "random": 10,
+    "greedy": 22
+  }
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "name": "rl2500-replay30",
+    "epochs": 20,
+    "training_puzzles": 2500,
+    "episodes": 50000,
+    "final_greedy": 2,
+    "best_greedy": 3,
+    "final_explore": 21,
+    "ever_successful_puzzles": 939,
+    "efficiency": 0.0005393939393939394,
+    "greedy_status_counts": {
+      "loop": 2498,
+      "solved": 2
+    },
+    "seconds": 1873.7616589519967,
+    "replay_max": 30,
+    "fresh_initial_weights_verified": true,
+    "checkpoint_reload": true,
+    "by_mode": {
+      "Easy": {
+        "solved": 2,
+        "count": 625
+      },
+      "Medium": {
+        "solved": 0,
+        "count": 625
+      },
+      "Hard": {
+        "solved": 0,
+        "count": 625
+      },
+      "Expert": {
+        "solved": 0,
+        "count": 625
+      }
+    }
+  },
+  {
+    "name": "rl2500-replay300",
+    "epochs": 20,
+    "training_puzzles": 2500,
+    "episodes": 50000,
+    "final_greedy": 1,
+    "best_greedy": 6,
+    "final_explore": 51,
+    "ever_successful_puzzles": 956,
+    "efficiency": 0.0004,
+    "greedy_status_counts": {
+      "loop": 2499,
+      "solved": 1
+    },
+    "seconds": 1891.7754679219943,
+    "replay_max": 300,
+    "fresh_initial_weights_verified": true,
+    "checkpoint_reload": true,
+    "by_mode": {
+      "Easy": {
+        "solved": 1,
+        "count": 625
+      },
+      "Medium": {
+        "solved": 0,
+        "count": 625
+      },
+      "Hard": {
+        "solved": 0,
+        "count": 625
+      },
+      "Expert": {
+        "solved": 0,
+        "count": 625
+      }
+    }
+  }
+]

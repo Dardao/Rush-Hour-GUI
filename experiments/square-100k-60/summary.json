@@ -1,0 +1,1 @@
+{"final":{"solved":804,"total":2500,"by_mode":{"Easy":422,"Medium":168,"Hard":166,"Expert":48},"loops":1696,"limits":0,"mean_solved_moves":29.95273631840796,"total_success_moves":24082,"epoch":60,"seconds":418.6315616889988,"replay_states":65457,"focus_states":52863,"loss":0.45912321206803125,"mean_actor_weight":0.9999999863406023},"best":[2500,-117015],"epochs_completed":60}

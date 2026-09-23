@@ -1,1 +1,1 @@
-"""Rush Hour research workbench, version 0.1."""
+"""Rush Hour rewards-only learning workbench v0.3.2."""

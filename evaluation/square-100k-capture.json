@@ -1,0 +1,24 @@
+{
+  "source": "experiments/square-100k-160/best.npz",
+  "sha256": "539f7dd67d42ae2f6bb52a46ea727e48c396d8e49bc8f69832df860572d89ffa",
+  "nearby_checkpoint_metrics": {
+    "solved": 2500,
+    "total": 2500,
+    "by_mode": {
+      "Easy": 625,
+      "Medium": 625,
+      "Hard": 625,
+      "Expert": 625
+    },
+    "loops": 0,
+    "limits": 0,
+    "mean_solved_moves": 38.5176,
+    "total_success_moves": 96294,
+    "epoch": 45,
+    "seconds": 324.30414053399727,
+    "replay_states": 65436,
+    "focus_states": 69,
+    "loss": 0.010117349130822751,
+    "mean_actor_weight": 0.9999999883479642
+  }
+}
