@@ -445,7 +445,11 @@ class Worker(QThread):
                 return
             if self.mode == 'supervised':
                 from .supervised import run_supervised
-                run_supervised(self)
+                if hasattr(self, 'seed_range'):
+                    from .seed_sweep import run_seed_sweep
+                    run_seed_sweep(self)
+                else:
+                    run_supervised(self)
                 return
             rng = np.random.default_rng(self.seed)
             if self.mode in ('infer', 'test', 'all'):
@@ -599,9 +603,10 @@ class Window(QMainWindow):
         layout.addWidget(title)
         top = QHBoxLayout(); layout.addLayout(top)
         self.heat = Heatmaps(self.net); top.addWidget(self.heat, 3)
-        self.success_plot = AccuracyPlot(success=True); top.addWidget(self.success_plot, 1)
-        self.accuracy_plot = AccuracyPlot(); top.addWidget(self.accuracy_plot, 1)
-        self.efficiency_plot = AccuracyPlot(efficiency=True); top.addWidget(self.efficiency_plot, 1)
+        from .sl_plot import SLPlot
+        self.success_plot = SLPlot('accuracy') if learning_mode=='supervised' else AccuracyPlot(success=True); top.addWidget(self.success_plot, 1)
+        self.accuracy_plot = SLPlot('loss') if learning_mode=='supervised' else AccuracyPlot(); top.addWidget(self.accuracy_plot, 1)
+        self.efficiency_plot = SLPlot('efficiency') if learning_mode=='supervised' else AccuracyPlot(efficiency=True); top.addWidget(self.efficiency_plot, 1)
         bar = QHBoxLayout(); layout.addLayout(bar)
         self.locked = []
         def button(text, action, lock=True):
@@ -639,6 +644,19 @@ class Window(QMainWindow):
         diagnostic_button = QPushButton('무작위 가중치로 새 지도학습' if learning_mode=='supervised' else '무작위 가중치로 새 RL'); diagnostic_button.clicked.connect(self.train_four)
         experiment.addWidget(diagnostic_button); experiment.addStretch()
         self.locked.extend([self.diagnostic_size, self.augmentation, self.experiment_seed, diagnostic_button, self.replay_max])
+        if learning_mode == 'supervised':
+            sweep_bar = QHBoxLayout(); layout.addLayout(sweep_bar)
+            sweep_bar.addWidget(QLabel('반복 학습 Seed 시작'))
+            self.seed_start = QSpinBox(); self.seed_start.setRange(0,999999); self.seed_start.setValue(1)
+            self.seed_end = QSpinBox(); self.seed_end.setRange(0,999999); self.seed_end.setValue(30)
+            sweep_bar.addWidget(self.seed_start); sweep_bar.addWidget(QLabel('종료 (포함)')); sweep_bar.addWidget(self.seed_end)
+            sweep_button = QPushButton('Seed 범위 새 지도학습'); sweep_button.clicked.connect(self.train_seed_range)
+            sweep_bar.addWidget(sweep_button)
+            export_button = QPushButton('그래프 PNG 저장'); export_button.clicked.connect(self.save_sl_graphs)
+            sweep_bar.addWidget(export_button)
+            self.seed_status = QLabel('각 seed 독립 초기화 · 동일 학습 범위 / Epochs')
+            sweep_bar.addWidget(self.seed_status); sweep_bar.addStretch()
+            self.locked.extend([self.seed_start, self.seed_end, sweep_button])
         phases=QHBoxLayout();layout.addLayout(phases)
         self.phase_labels={}
         for key,label in ([('prepare','교사 데이터'),('learn','학습'),('evaluate','평가')] if learning_mode=='supervised' else [('explore','탐험'),('learn','학습'),('evaluate','평가')]):
@@ -667,9 +685,6 @@ class Window(QMainWindow):
         fit = QCheckBox('100개 한 화면'); fit.setChecked(True); fit.toggled.connect(self.boards.set_fit); nav.addWidget(fit)
         scroll = QScrollArea(); scroll.setWidgetResizable(True); scroll.setWidget(self.boards); layout.addWidget(scroll, 1)
         self.diagnostic_size.currentIndexChanged.connect(self.scope_changed)
-        for plot,kind in [(self.success_plot,'solve'),(self.accuracy_plot,'loss'),(self.efficiency_plot,'accuracy')]:
-            plot.supervised_kind=kind if learning_mode=='supervised' else None
-            if learning_mode=='supervised':plot.setToolTip('실제 지도학습 기록. loss와 행동 정확도는 가중치가 변하는 동안의 batch 평균입니다. greedy는 epoch 후 고정 모델 평가입니다.')
         self.sync_model_view()
         self.set_phase('idle')
         self.show_page()
@@ -793,6 +808,37 @@ class Window(QMainWindow):
         self.accuracy_plot.clear(); self.success_plot.clear(); self.efficiency_plot.clear()
         self.launch(Worker('supervised' if self.learning_mode=='supervised' else 'train', self.net.copy(), list(self.puzzles), self.epochs.value(),live_delay=self.speed.value(),diagnostic=True,diagnostic_count=count,augment=self.augmentation.isChecked(),seed=self.experiment_seed.value(),replay_max=self.replay_max.value()))
 
+    def save_sl_graphs(self):
+        path, _ = QFileDialog.getSaveFileName(self, '지도학습 그래프 저장', 'SL_seed_curves.png', 'PNG (*.png)')
+        if not path: return
+        plots = (self.success_plot, self.accuracy_plot, self.efficiency_plot)
+        image = QImage(sum(p.width() for p in plots), max(p.height() for p in plots), QImage.Format.Format_ARGB32)
+        image.fill(QColor('white'))
+        painter = QPainter(image); x = 0
+        for plot in plots:
+            painter.drawPixmap(x, 0, plot.grab()); x += plot.width()
+        painter.end()
+        if not image.save(path): QMessageBox.critical(self, '저장 실패', 'PNG 파일을 저장하지 못했습니다.')
+
+    def train_seed_range(self):
+        if not self.puzzles:
+            QMessageBox.information(self, '문제 필요', '먼저 문제를 불러오세요.'); return
+        first, last = self.seed_start.value(), self.seed_end.value()
+        if first > last:
+            QMessageBox.information(self, 'Seed 범위', '시작 seed는 종료 seed 이하여야 합니다.'); return
+        backup = Path(f'checkpoints/before-seed-sweep-{time.time_ns()}.npz')
+        try:
+            backup.parent.mkdir(parents=True, exist_ok=True); self.net.save(backup)
+        except Exception as exc:
+            QMessageBox.critical(self, '백업 실패', str(exc)); return
+        for plot in (self.success_plot, self.accuracy_plot, self.efficiency_plot): plot.clear()
+        worker = Worker('supervised', self.net.copy(), list(self.puzzles), self.epochs.value(),
+                        diagnostic=True, diagnostic_count=self.diagnostic_size.currentData(),
+                        seed=first, live_delay=self.speed.value())
+        worker.seed_range = range(first, last+1)
+        self.info.setText(f'Seed {first}–{last} 독립 반복 학습 · 이전 모델: {backup}')
+        self.launch(worker)
+
     def train_four(self):
         count, seed = self.diagnostic_size.currentData(), self.experiment_seed.value()
         try:
@@ -862,6 +908,10 @@ class Window(QMainWindow):
         if not self.boards.advance(): self.timer.stop()
 
     def progress(self, payload):
+        if 'seed_start' in payload:
+            self.seed_status.setText(f"Seed {payload['seed_start']} · {payload['seed_index']}/{payload['seed_total']}")
+            self.monitor_cache.clear(); self.show_page()
+            return
         if 'update' in payload:
             self.net=payload['net'];self.heat.set_network(self.net);self.set_phase('learn')
             self.learning_status.setText(f"가중치 업데이트 {payload['update_count']:,}회")
@@ -946,6 +996,12 @@ class Window(QMainWindow):
             self.info.setText(f'{name} 평가 완료 · 고정 모델 · 가중치 업데이트 없음')
         else:
             self.net = result; self.heat.set_network(self.net)
+            if getattr(self.worker, 'sweep_dir', None):
+                status = '중단' if self.worker.isInterruptionRequested() else '완료'
+                self.seed_status.setText(f'Seed 반복 {status}')
+                self.info.setText(f'Seed 반복 {status} · 로그·모델 경로: {self.worker.sweep_dir}/batch.json · 평균: mean.csv')
+                return
+
             self.info.setText(f'학습 종료 · best.npz / final.npz 자동 저장: {self.worker.artifact_dir}' if self.worker.diagnostic else '강화학습 종료 · 전체 분할 학습/검증 · 테스트 학습 미사용 · 차량 순서 증강 · 성공 replay · curriculum 적용')
 
     def save(self):

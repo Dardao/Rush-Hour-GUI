@@ -49,7 +49,7 @@ def action_text(puzzle, action):
     return f'{puzzle.cars[car].label.upper()} {direction} {code % 5 + 1}칸'
 
 
-def run_supervised(worker):
+def run_supervised(worker, emit_result=True):
     w = worker
     if not getattr(w.net, 'policy_only', False):
         raise ValueError('Supervised training requires its own policy model')
@@ -112,7 +112,7 @@ def run_supervised(worker):
             moves = [display_moves(p, path, s == 'solved') for p, path, s in zip(evaluated, paths, statuses)]
             efficiencies = [p.minimum_possible/n if s == 'solved' else 0
                             for p, n, s in zip(evaluated, moves, statuses)]
-            m = dict(supervised=True, epoch=w.epoch, loss=losses/seen, action_accuracy=correct/seen,
+            m = dict(supervised=True, seed=w.seed, epoch=w.epoch, loss=losses/seen, action_accuracy=correct/seen,
                      train_solved=solved, train_evaluated=len(train), train_success_rate=solved/len(train),
                      solved=vals.count('solved'), evaluated=len(valid),
                      validation_success_rate=vals.count('solved')/len(valid) if valid else None,
@@ -130,4 +130,7 @@ def run_supervised(worker):
     w.net.save(w.artifact_dir / 'final.npz')
     (w.artifact_dir/'run.json').write_text(json.dumps(dict(log_path=str(log_path),
         interrupted=w.isInterruptionRequested(), epochs_completed=len(history)-1), indent=2))
-    w.result.emit(('supervised', w.net.copy()))
+    if emit_result:
+        w.result.emit(('supervised', w.net.copy()))
+    return dict(seed=w.seed, log_path=str(log_path), checkpoint_dir=str(w.artifact_dir),
+                epochs_completed=len(history)-1, interrupted=w.isInterruptionRequested(), history=history[1:])
